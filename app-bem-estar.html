@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seu App de Bem-Estar Total</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for Inter font and text shadow */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .text-shadow-md {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-100 font-sans antialiased flex flex-col">
+
+    <!-- Header and Navigation -->
+    <header class="bg-gradient-to-r from-blue-600 to-purple-700 text-white shadow-lg p-4 md:p-6 rounded-b-lg">
+        <div class="container mx-auto flex flex-col md:flex-row items-center justify-between">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 md:mb-0 text-shadow-md">
+                Seu App de Bem-Estar Total
+            </h1>
+            <nav class="flex flex-wrap justify-center gap-3 md:gap-6">
+                <button id="nav-home" class="nav-link px-4 py-2 rounded-full text-lg font-medium transition-all duration-300 text-white hover:bg-blue-500 hover:shadow-md active-link">
+                    Início
+                </button>
+                <button id="nav-treinos" class="nav-link px-4 py-2 rounded-full text-lg font-medium transition-all duration-300 text-white hover:bg-blue-500 hover:shadow-md">
+                    Treinos
+                </button>
+                <button id="nav-fisioterapia-pilates" class="nav-link px-4 py-2 rounded-full text-lg font-medium transition-all duration-300 text-white hover:bg-blue-500 hover:shadow-md">
+                    Fisioterapia & Pilates
+                </button>
+                <button id="nav-gastronomia" class="nav-link px-4 py-2 rounded-full text-lg font-medium transition-all duration-300 text-white hover:bg-blue-500 hover:shadow-md">
+                    Gastronomia
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main content area -->
+    <main id="app-content" class="flex-grow container mx-auto p-4 md:p-8">
+        <!-- Content will be loaded here by JavaScript -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white p-4 md:p-6 text-center text-sm rounded-t-lg mt-8">
+        <p>&copy; <span id="current-year"></span> App de Bem-Estar Total. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        // Get the current year for the footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Get references to main elements
+        const appContent = document.getElementById('app-content');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        // Define content for each page
+        const pages = {
+            'home': `
+                <div class="bg-white p-6 md:p-10 rounded-lg shadow-xl text-center">
+                    <h2 class="text-4xl font-extrabold text-blue-700 mb-6">Bem-vindo ao Seu Guia de Bem-Estar!</h2>
+                    <p class="text-lg text-gray-700 mb-8 leading-relaxed">
+                        Descubra uma nova forma de cuidar de si mesmo, unindo o melhor dos treinos personalizados,
+                        terapias de movimento e uma alimentação saudável e deliciosa.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-blue-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center text-center">
+                            <div class="text-5xl mb-4">💪</div>
+                            <h3 class="text-2xl font-semibold text-blue-600 mb-3">Treinos Personalizados</h3>
+                            <p class="text-gray-600">Planos de treino adaptados aos seus objetivos, com acompanhamento profissional.</p>
+                        </div>
+                        <div class="bg-blue-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center text-center">
+                            <div class="text-5xl mb-4">🧘‍♀️</div>
+                            <h3 class="text-2xl font-semibold text-blue-600 mb-3">Fisioterapia & Pilates</h3>
+                            <p class="text-gray-600">Recupere-se e fortaleça seu corpo com sessões especializadas e instrutores qualificados.</p>
+                        </div>
+                        <div class="bg-blue-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center text-center">
+                            <div class="text-5xl mb-4">🥗</div>
+                            <h3 class="text-2xl font-semibold text-blue-600 mb-3">Gastronomia Saudável</h3>
+                            <p class="text-gray-600">Receitas nutritivas e saborosas para uma vida equilibrada, sem abrir mão do prazer.</p>
+                        </div>
+                    </div>
+                </div>
+            `,
+            'treinos': `
+                <div class="bg-white p-6 md:p-10 rounded-lg shadow-xl">
+                    <h2 class="text-3xl font-bold text-blue-700 mb-6">Sua Jornada de Treino Personalizada</h2>
+                    <p class="text-lg text-gray-700 mb-4">
+                        Aqui você encontrará planos de treino desenvolvidos por profissionais qualificados,
+                        adaptados às suas necessidades e objetivos, seja para ganho de massa, emagrecimento ou performance.
+                    </p>
+                    <ul class="list-disc list-inside text-gray-600 space-y-2 mb-6">
+                        <li>Treinos de força e resistência.</li>
+                        <li>Cardio e HIIT.</li>
+                        <li>Funcional e mobilidade.</li>
+                        <li>Acompanhamento de progresso e dicas de execução.</li>
+                    </ul>
+                    <div class="bg-blue-100 p-4 rounded-md text-blue-800 border border-blue-200">
+                        <p class="font-semibold">Em breve:</p>
+                        <p>Vídeos demonstrativos, agendamento de sessões com personal trainers e feedback em tempo real!</p>
+                    </div>
+                </div>
+            `,
+            'fisioterapia-pilates': `
+                <div class="bg-white p-6 md:p-10 rounded-lg shadow-xl">
+                    <h2 class="text-3xl font-bold text-blue-700 mb-6">Recupere e Fortaleça com Fisioterapia e Pilates</h2>
+                    <p class="text-lg text-gray-700 mb-4">
+                        Nesta seção, você terá acesso a exercícios e orientações para reabilitação,
+                        prevenção de lesões e fortalecimento do core, essenciais para uma vida sem dores e com mais movimento.
+                    </p>
+                    <ul class="list-disc list-inside text-gray-600 space-y-2 mb-6">
+                        <li>Exercícios para diversas condições (coluna, joelho, ombro).</li>
+                        <li>Rotinas de Pilates para todos os níveis.</li>
+                        <li>Dicas de postura e ergonomia.</li>
+                        <li>Artigos sobre bem-estar e saúde do movimento.</li>
+                    </ul>
+                    <div class="bg-green-100 p-4 rounded-md text-green-800 border border-green-200">
+                        <p class="font-semibold">Em breve:</p>
+                        <p>Sessões online com fisioterapeutas, aulas de Pilates ao vivo e programas de recuperação personalizados!</p>
+                    </div>
+                </div>
+            `,
+            'gastronomia': `
+                <div class="bg-white p-6 md:p-10 rounded-lg shadow-xl">
+                    <h2 class="text-3xl font-bold text-blue-700 mb-6">Nutrição e Sabor: Sua Gastronomia Saudável</h2>
+                    <p class="text-lg text-gray-700 mb-4">
+                        Descubra um mundo de receitas deliciosas e nutritivas, pensadas para complementar
+                        seu estilo de vida ativo e saudável. Alimente-se bem sem abrir mão do prazer de comer!
+                    </p>
+                    <ul class="list-disc list-inside text-gray-600 space-y-2 mb-6">
+                        <li>Receitas para café da manhã, almoço, jantar e lanches.</li>
+                        <li>Opções vegetarianas, veganas e sem glúten.</li>
+                        <li>Dicas de preparo e substituições inteligentes.</li>
+                        <li>Artigos sobre alimentação consciente e benefícios dos alimentos.</li>
+                    </ul>
+                    <div class="bg-yellow-100 p-4 rounded-md text-yellow-800 border border-yellow-200">
+                        <p class="font-semibold">Em breve:</p>
+                        <p>Planos alimentares personalizados, lista de compras inteligente e integração com nutricionistas!</p>
+                    </div>
+                </div>
+            `
+        };
+
+        // Function to load page content
+        function loadPage(pageName) {
+            appContent.innerHTML = pages[pageName];
+
+            // Update active link styling
+            navLinks.forEach(link => {
+                link.classList.remove('bg-white', 'text-blue-700', 'shadow-md', 'transform', 'scale-105', 'active-link');
+                link.classList.add('text-white', 'hover:bg-blue-500', 'hover:shadow-md');
+            });
+
+            const activeLink = document.getElementById(`nav-${pageName}`);
+            if (activeLink) {
+                activeLink.classList.remove('text-white', 'hover:bg-blue-500', 'hover:shadow-md');
+                activeLink.classList.add('bg-white', 'text-blue-700', 'shadow-md', 'transform', 'scale-105', 'active-link');
+            }
+        }
+
+        // Add event listeners to navigation buttons
+        navLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                const pageId = event.target.id.replace('nav-', '');
+                loadPage(pageId);
+            });
+        });
+
+        // Load the home page by default when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPage('home');
+        });
+    </script>
+</body>
+</html>
