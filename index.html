@@ -44,6 +44,9 @@
                 <button id="nav-gastronomia" class="nav-link px-4 py-2 rounded-full text-lg font-medium transition-all duration-300 text-white hover:bg-blue-500 hover:shadow-md">
                     Gastronomia
                 </button>
+                <button id="nav-favoritos" class="nav-link px-4 py-2 rounded-full text-lg font-medium transition-all duration-300 text-white hover:bg-blue-500 hover:shadow-md">
+                    Meus Favoritos
+                </button>
             </nav>
         </div>
     </header>
@@ -65,6 +68,58 @@
         // Get references to main elements
         const appContent = document.getElementById('app-content');
         const navLinks = document.querySelectorAll('.nav-link');
+
+        // Helper function to generate a unique ID (simple for this example)
+        function generateUniqueId(prefix) {
+            return prefix + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Functions for localStorage (Favorites)
+        function getFavorites() {
+            const favorites = localStorage.getItem('wellnessAppFavorites');
+            return favorites ? JSON.parse(favorites) : [];
+        }
+
+        function saveFavorites(favorites) {
+            localStorage.setItem('wellnessAppFavorites', JSON.stringify(favorites));
+        }
+
+        function toggleFavorite(itemId, itemType, itemTitle, itemContent) {
+            let favorites = getFavorites();
+            const existingIndex = favorites.findIndex(fav => fav.id === itemId);
+
+            if (existingIndex > -1) {
+                // Item already favorited, remove it
+                favorites.splice(existingIndex, 1);
+                alertMessage('Removido dos favoritos!', 'bg-red-500');
+            } else {
+                // Item not favorited, add it
+                favorites.push({ id: itemId, type: itemType, title: itemTitle, content: itemContent });
+                alertMessage('Adicionado aos favoritos!', 'bg-green-500');
+            }
+            saveFavorites(favorites);
+            // Re-render the current page to update favorite button state
+            loadPage(currentPage);
+        }
+
+        // Custom Alert Message (instead of alert())
+        function alertMessage(message, bgColor) {
+            const alertBox = document.createElement('div');
+            alertBox.className = `fixed top-4 right-4 p-4 rounded-lg text-white shadow-lg transition-transform transform translate-x-full duration-300 ${bgColor}`;
+            alertBox.textContent = message;
+            document.body.appendChild(alertBox);
+
+            setTimeout(() => {
+                alertBox.classList.remove('translate-x-full');
+                alertBox.classList.add('translate-x-0');
+            }, 50); // Small delay for animation
+
+            setTimeout(() => {
+                alertBox.classList.remove('translate-x-0');
+                alertBox.classList.add('translate-x-full');
+                alertBox.addEventListener('transitionend', () => alertBox.remove());
+            }, 3000); // Disappear after 3 seconds
+        }
 
         // Define content for each page
         const pages = {
@@ -101,17 +156,26 @@
                         Aqui você encontrará planos de treino desenvolvidos por profissionais qualificados,
                         adaptados às suas necessidades e objetivos, seja para ganho de massa, emagrecimento ou performance.
                     </p>
-                    <h3 class="text-2xl font-semibold text-blue-600 mt-8 mb-4">Treino Exemplo: Força Total (Iniciante)</h3>
-                    <ul class="list-disc list-inside text-gray-600 space-y-2 mb-6">
-                        <li>**Agachamento (Squat):** 3 séries de 10-12 repetições</li>
-                        <li>**Flexão de Braço (Push-up):** 3 séries de 8-10 repetições (ou com joelhos no chão)</li>
-                        <li>**Remada Curvada (Bent-over Row):** 3 séries de 10-12 repetições (com halteres ou elástico)</li>
-                        <li>**Prancha (Plank):** 3 séries, segurar por 30-45 segundos</li>
-                        <li>**Afundo (Lunge):** 3 séries de 10 repetições por perna</li>
-                    </ul>
-                    <p class="text-md text-gray-700 mb-6">
-                        *Descanse 60-90 segundos entre as séries. Realize este treino 2-3 vezes por semana.*
-                    </p>
+                    <div class="mb-8 p-4 bg-gray-50 rounded-lg shadow-sm">
+                        <h3 class="text-2xl font-semibold text-blue-600 mb-4">Treino Exemplo: Força Total (Iniciante)</h3>
+                        <ul class="list-disc list-inside text-gray-600 space-y-2 mb-4">
+                            <li>**Agachamento (Squat):** 3 séries de 10-12 repetições</li>
+                            <li>**Flexão de Braço (Push-up):** 3 séries de 8-10 repetições (ou com joelhos no chão)</li>
+                            <li>**Remada Curvada (Bent-over Row):** 3 séries de 10-12 repetições (com halteres ou elástico)</li>
+                            <li>**Prancha (Plank):** 3 séries, segurar por 30-45 segundos</li>
+                            <li>**Afundo (Lunge):** 3 séries de 10 repetições por perna</li>
+                        </ul>
+                        <p class="text-md text-gray-700 mb-4">
+                            *Descanse 60-90 segundos entre as séries. Realize este treino 2-3 vezes por semana.*
+                        </p>
+                        <button class="favorite-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
+                                data-id="treino_forca_total"
+                                data-type="Treino"
+                                data-title="Treino Exemplo: Força Total (Iniciante)">
+                            Adicionar aos Favoritos ❤️
+                        </button>
+                    </div>
+
                     <div class="bg-blue-100 p-4 rounded-md text-blue-800 border border-blue-200">
                         <p class="font-semibold">Em breve:</p>
                         <p>Vídeos demonstrativos, agendamento de sessões com personal trainers e feedback em tempo real!</p>
@@ -125,17 +189,26 @@
                         Nesta seção, você terá acesso a exercícios e orientações para reabilitação,
                         prevenção de lesões e fortalecimento do core, essenciais para uma vida sem dores e com mais movimento.
                     </p>
-                    <h3 class="text-2xl font-semibold text-blue-600 mt-8 mb-4">Rotina de Pilates para Iniciantes (Foco no Core)</h3>
-                    <ul class="list-disc list-inside text-gray-600 space-y-2 mb-6">
-                        <li>**Cem (The Hundred):** 100 bombeamentos de braço, inspirando por 5 e expirando por 5.</li>
-                        <li>**Ponte (Bridge):** 3 séries de 10-12 elevações de quadril.</li>
-                        <li>**Rolamento para Cima (Roll-up):** 3 séries de 8-10 repetições, controlando o movimento da coluna.</li>
-                        <li>**Single Leg Stretch:** 3 séries de 10-12 repetições por perna.</li>
-                        <li>**Alongamento da Coluna para Frente (Spine Stretch Forward):** 3 séries de 8-10 repetições.</li>
-                    </ul>
-                    <p class="text-md text-gray-700 mb-6">
-                        *Concentre-se na respiração e no controle dos movimentos. Faça 2-3 vezes por semana.*
-                    </p>
+                    <div class="mb-8 p-4 bg-gray-50 rounded-lg shadow-sm">
+                        <h3 class="text-2xl font-semibold text-blue-600 mb-4">Rotina de Pilates para Iniciantes (Foco no Core)</h3>
+                        <ul class="list-disc list-inside text-gray-600 space-y-2 mb-4">
+                            <li>**Cem (The Hundred):** 100 bombeamentos de braço, inspirando por 5 e expirando por 5.</li>
+                            <li>**Ponte (Bridge):** 3 séries de 10-12 elevações de quadril.</li>
+                            <li>**Rolamento para Cima (Roll-up):** 3 séries de 8-10 repetições, controlando o movimento da coluna.</li>
+                            <li>**Single Leg Stretch:** 3 séries de 10-12 repetições por perna.</li>
+                            <li>**Alongamento da Coluna para Frente (Spine Stretch Forward):** 3 séries de 8-10 repetições.</li>
+                        </ul>
+                        <p class="text-md text-gray-700 mb-4">
+                            *Concentre-se na respiração e no controle dos movimentos. Faça 2-3 vezes por semana.*
+                        </p>
+                        <button class="favorite-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
+                                data-id="pilates_iniciantes"
+                                data-type="Fisioterapia & Pilates"
+                                data-title="Rotina de Pilates para Iniciantes (Foco no Core)">
+                            Adicionar aos Favoritos ❤️
+                        </button>
+                    </div>
+
                     <div class="bg-green-100 p-4 rounded-md text-green-800 border border-green-200">
                         <p class="font-semibold">Em breve:</p>
                         <p>Sessões online com fisioterapeutas, aulas de Pilates ao vivo e programas de recuperação personalizados!</p>
@@ -149,54 +222,84 @@
                         Descubra um mundo de receitas deliciosas e nutritivas, pensadas para complementar
                         seu estilo de vida ativo e saudável. Alimente-se bem sem abrir mão do prazer de comer!
                     </p>
-                    <h3 class="text-2xl font-semibold text-blue-600 mt-8 mb-4">Receita: Salada de Quinoa com Vegetais Coloridos</h3>
-                    <h4 class="text-xl font-medium text-gray-700 mb-2">Ingredientes:</h4>
-                    <ul class="list-disc list-inside text-gray-600 space-y-1 mb-4">
-                        <li>1 xícara de quinoa cozida</li>
-                        <li>1/2 pepino picado</li>
-                        <li>1/2 pimentão vermelho picado</li>
-                        <li>1/2 cebola roxa picada</li>
-                        <li>1/4 xícara de milho cozido</li>
-                        <li>Folhas de hortelã fresca picadas a gosto</li>
-                        <li>Suco de 1 limão</li>
-                        <li>2 colheres de sopa de azeite de oliva extra virgem</li>
-                        <li>Sal e pimenta do reino a gosto</li>
-                    </ul>
-                    <h4 class="text-xl font-medium text-gray-700 mb-2">Modo de Preparo:</h4>
-                    <ol class="list-decimal list-inside text-gray-600 space-y-1 mb-6">
-                        <li>Em uma tigela grande, misture a quinoa cozida, pepino, pimentão, cebola roxa e milho.</li>
-                        <li>Adicione as folhas de hortelã.</li>
-                        <li>Em um recipiente separado, misture o suco de limão, azeite, sal e pimenta.</li>
-                        <li>Despeje o molho sobre a salada e misture bem. Sirva fria.</li>
-                    </ol>
+                    <div class="mb-8 p-4 bg-gray-50 rounded-lg shadow-sm">
+                        <h3 class="text-2xl font-semibold text-blue-600 mb-4">Receita: Salada de Quinoa com Vegetais Coloridos</h3>
+                        <h4 class="text-xl font-medium text-gray-700 mb-2">Ingredientes:</h4>
+                        <ul class="list-disc list-inside text-gray-600 space-y-1 mb-4">
+                            <li>1 xícara de quinoa cozida</li>
+                            <li>1/2 pepino picado</li>
+                            <li>1/2 pimentão vermelho picado</li>
+                            <li>1/2 cebola roxa picada</li>
+                            <li>1/4 xícara de milho cozido</li>
+                            <li>Folhas de hortelã fresca picadas a gosto</li>
+                            <li>Suco de 1 limão</li>
+                            <li>2 colheres de sopa de azeite de oliva extra virgem</li>
+                            <li>Sal e pimenta do reino a gosto</li>
+                        </ul>
+                        <h4 class="text-xl font-medium text-gray-700 mb-2">Modo de Preparo:</h4>
+                        <ol class="list-decimal list-inside text-gray-600 space-y-1 mb-4">
+                            <li>Em uma tigela grande, misture a quinoa cozida, pepino, pimentão, cebola roxa e milho.</li>
+                            <li>Adicione as folhas de hortelã.</li>
+                            <li>Em um recipiente separado, misture o suco de limão, azeite, sal e pimenta.</li>
+                            <li>Despeje o molho sobre a salada e misture bem. Sirva fria.</li>
+                        </ol>
+                        <button class="favorite-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
+                                data-id="receita_quinoa"
+                                data-type="Gastronomia"
+                                data-title="Salada de Quinoa com Vegetais Coloridos">
+                            Adicionar aos Favoritos ❤️
+                        </button>
+                    </div>
 
-                    <h3 class="text-2xl font-semibold text-blue-600 mt-8 mb-4">Receita: Smoothie Verde Energizante</h3>
-                    <h4 class="text-xl font-medium text-gray-700 mb-2">Ingredientes:</h4>
-                    <ul class="list-disc list-inside text-gray-600 space-y-1 mb-4">
-                        <li>1 xícara de espinafre fresco</li>
-                        <li>1/2 banana congelada</li>
-                        <li>1/2 maçã picada</li>
-                        <li>1/2 xícara de água de coco (ou água filtrada)</li>
-                        <li>1 colher de sopa de semente de chia</li>
-                        <li>Gelo a gosto</li>
-                    </ul>
-                    <h4 class="text-xl font-medium text-gray-700 mb-2">Modo de Preparo:</h4>
-                    <ol class="list-decimal list-inside text-gray-600 space-y-1 mb-6">
-                        <li>Adicione todos os ingredientes no liquidificador.</li>
-                        <li>Bata até obter uma mistura homogênea e cremosa.</li>
-                        <li>Sirva imediatamente.</li>
-                    </ol>
+                    <div class="mb-8 p-4 bg-gray-50 rounded-lg shadow-sm">
+                        <h3 class="text-2xl font-semibold text-blue-600 mb-4">Receita: Smoothie Verde Energizante</h3>
+                        <h4 class="text-xl font-medium text-gray-700 mb-2">Ingredientes:</h4>
+                        <ul class="list-disc list-inside text-gray-600 space-y-1 mb-4">
+                            <li>1 xícara de espinafre fresco</li>
+                            <li>1/2 banana congelada</li>
+                            <li>1/2 maçã picada</li>
+                            <li>1/2 xícara de água de coco (ou água filtrada)</li>
+                            <li>1 colher de sopa de semente de chia</li>
+                            <li>Gelo a gosto</li>
+                        </ul>
+                        <h4 class="text-xl font-medium text-gray-700 mb-2">Modo de Preparo:</h4>
+                        <ol class="list-decimal list-inside text-gray-600 space-y-1 mb-4">
+                            <li>Adicione todos os ingredientes no liquidificador.</li>
+                            <li>Bata até obter uma mistura homogênea e cremosa.</li>
+                            <li>Sirva imediatamente.</li>
+                        </ol>
+                        <button class="favorite-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
+                                data-id="receita_smoothie"
+                                data-type="Gastronomia"
+                                data-title="Smoothie Verde Energizante">
+                            Adicionar aos Favoritos ❤️
+                        </button>
+                    </div>
 
                     <div class="bg-yellow-100 p-4 rounded-md text-yellow-800 border border-yellow-200">
                         <p class="font-semibold">Em breve:</p>
                         <p>Planos alimentares personalizados, lista de compras inteligente e integração com nutricionistas!</p>
                     </div>
                 </div>
+            `,
+            'favoritos': `
+                <div class="bg-white p-6 md:p-10 rounded-lg shadow-xl">
+                    <h2 class="text-3xl font-bold text-blue-700 mb-6">Meus Favoritos</h2>
+                    <div id="favorites-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Favorited items will be loaded here by JavaScript -->
+                    </div>
+                    <p id="no-favorites-message" class="text-lg text-gray-600 text-center mt-8 hidden">
+                        Você ainda não tem itens favoritos. Adicione alguns para vê-los aqui!
+                    </p>
+                </div>
             `
         };
 
+        let currentPage = 'home'; // Keep track of the current page
+
         // Function to load page content
         function loadPage(pageName) {
+            currentPage = pageName; // Update current page
             appContent.innerHTML = pages[pageName];
 
             // Update active link styling
@@ -209,6 +312,103 @@
             if (activeLink) {
                 activeLink.classList.remove('text-white', 'hover:bg-blue-500', 'hover:shadow-md');
                 activeLink.classList.add('active-link');
+            }
+
+            // If it's the favorites page, render the favorited items
+            if (pageName === 'favoritos') {
+                renderFavorites();
+            } else {
+                // Attach event listeners to favorite buttons on other pages
+                attachFavoriteButtonListeners();
+                updateFavoriteButtonStates();
+            }
+        }
+
+        // Function to attach listeners to favorite buttons
+        function attachFavoriteButtonListeners() {
+            const favoriteButtons = document.querySelectorAll('.favorite-btn');
+            favoriteButtons.forEach(button => {
+                // Remove existing listener to prevent duplicates
+                button.removeEventListener('click', handleFavoriteButtonClick);
+                button.addEventListener('click', handleFavoriteButtonClick);
+            });
+        }
+
+        function handleFavoriteButtonClick(event) {
+            const button = event.target;
+            const itemId = button.dataset.id;
+            const itemType = button.dataset.type;
+            const itemTitle = button.dataset.title;
+
+            // Get the content of the parent div (the entire item card)
+            const itemContentElement = button.closest('.p-4.bg-gray-50.rounded-lg.shadow-sm');
+            let itemContent = itemContentElement ? itemContentElement.innerHTML : '';
+
+            // Remove the favorite button HTML from the content before saving
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = itemContent;
+            const btnToRemove = tempDiv.querySelector('.favorite-btn');
+            if (btnToRemove) {
+                btnToRemove.remove();
+            }
+            itemContent = tempDiv.innerHTML;
+
+            toggleFavorite(itemId, itemType, itemTitle, itemContent);
+        }
+
+        // Function to update the text and style of favorite buttons
+        function updateFavoriteButtonStates() {
+            const favorites = getFavorites();
+            const favoriteButtons = document.querySelectorAll('.favorite-btn');
+            favoriteButtons.forEach(button => {
+                const itemId = button.dataset.id;
+                if (favorites.some(fav => fav.id === itemId)) {
+                    button.textContent = 'Remover dos Favoritos 💔';
+                    button.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+                    button.classList.add('bg-red-500', 'hover:bg-red-600');
+                } else {
+                    button.textContent = 'Adicionar aos Favoritos ❤️';
+                    button.classList.remove('bg-red-500', 'hover:bg-red-600');
+                    button.classList.add('bg-blue-500', 'hover:bg-blue-600');
+                }
+            });
+        }
+
+        // Function to render favorited items on the "Meus Favoritos" page
+        function renderFavorites() {
+            const favoritesListDiv = document.getElementById('favorites-list');
+            const noFavoritesMessage = document.getElementById('no-favorites-message');
+            const favorites = getFavorites();
+
+            favoritesListDiv.innerHTML = ''; // Clear previous content
+
+            if (favorites.length === 0) {
+                noFavoritesMessage.classList.remove('hidden');
+            } else {
+                noFavoritesMessage.classList.add('hidden');
+                favorites.forEach(fav => {
+                    const favoriteCard = document.createElement('div');
+                    favoriteCard.className = 'bg-white p-6 rounded-lg shadow-md border border-gray-200';
+                    favoriteCard.innerHTML = `
+                        <h3 class="text-xl font-semibold text-purple-700 mb-2">${fav.title}</h3>
+                        <p class="text-sm text-gray-500 mb-4">Tipo: ${fav.type}</p>
+                        <div class="text-gray-700 text-sm leading-relaxed mb-4">${fav.content}</div>
+                        <button class="remove-favorite-btn bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
+                                data-id="${fav.id}">
+                            Remover 🗑️
+                        </button>
+                    `;
+                    favoritesListDiv.appendChild(favoriteCard);
+                });
+
+                // Attach listeners to remove buttons on the favorites page
+                document.querySelectorAll('.remove-favorite-btn').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const itemId = event.target.dataset.id;
+                        toggleFavorite(itemId); // Use toggleFavorite to remove
+                        renderFavorites(); // Re-render favorites list
+                    });
+                });
             }
         }
 
