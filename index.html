@@ -200,7 +200,7 @@
                 modalImage.src = ''; // Clear src
                 modalNoImageText.classList.remove('hidden'); // Ensure it's not hidden if no image
                 // If no image, display the placeholder text instead of hiding it
-                modalVideoPlaceholder.classList.add('flex', 'items-center', 'justify- doj ustify-center'); // Add centering if no image
+                modalVideoPlaceholder.classList.add('flex', 'items-center', 'justify-center'); // Add centering if no image
             }
 
             exerciseModal.classList.remove('hidden');
@@ -279,6 +279,31 @@
                         </button>
                     </div>
 
+                    <div class="mb-8 p-4 bg-gray-50 rounded-lg shadow-sm">
+                        <h3 class="text-2xl font-semibold text-blue-600 mb-4">Treino Exemplo: Cardio HIIT (Intermediário)</h3>
+                        <ul class="list-disc list-inside text-gray-600 space-y-2 mb-4">
+                            <li><span class="exercise-detail-trigger" data-title="Polichinelos (Jumping Jacks)" data-description="Comece com os pés juntos e braços ao lado do corpo. Salte, abrindo as pernas e levantando os braços acima da cabeça. Volte à posição inicial. Faça o mais rápido possível." data-image="https://placehold.co/400x250/E0E7FF/4338CA?text=Polichinelos">Polichinelos (Jumping Jacks)</span>: 40 segundos de execução, 20 segundos de descanso</li>
+                            <li><span class="exercise-detail-trigger" data-title="Corrida no Lugar (High Knees)" data-description="Corra no lugar, levantando os joelhos o mais alto possível em direção ao peito. Mantenha um ritmo rápido e use os braços para impulsionar." data-image="https://placehold.co/400x250/E0E7FF/4338CA?text=Corrida+no+Lugar">Corrida no Lugar (High Knees)</span>: 40 segundos de execução, 20 segundos de descanso</li>
+                            <li><span class="exercise-detail-trigger" data-title="Burpees" data-description="Comece em pé, agache, coloque as mãos no chão, jogue os pés para trás (posição de prancha), faça uma flexão (opcional), traga os pés de volta, e salte com os braços para cima." data-image="https://placehold.co/400x250/E0E7FF/4338CA?text=Burpee">Burpees</span>: 40 segundos de execução, 20 segundos de descanso</li>
+                            <li><span class="exercise-detail-trigger" data-title="Mountain Climbers" data-description="Em posição de prancha, traga um joelho de cada vez em direção ao peito, alternando as pernas rapidamente, como se estivesse escalando uma montanha." data-image="https://placehold.co/400x250/E0E7FF/4338CA?text=Mountain+Climbers">Mountain Climbers</span>: 40 segundos de execução, 20 segundos de descanso</li>
+                        </ul>
+                        <p class="text-md text-gray-700 mb-4">
+                            *Repita o circuito 3-4 vezes. Descanse 1 minuto entre os circuitos. Ideal para 2-3 vezes por semana.*
+                        </p>
+                        <button class="favorite-btn mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
+                                data-id="treino_cardio_hiit"
+                                data-type="Treino"
+                                data-title="Treino Exemplo: Cardio HIIT (Intermediário)">
+                            Adicionar aos Favoritos ❤️
+                        </button>
+                        <button class="complete-workout-btn mt-2 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
+                                data-id="treino_cardio_hiit"
+                                data-title="Treino Exemplo: Cardio HIIT (Intermediário)">
+                            Marcar como Concluído ✅
+                        </button>
+                    </div>
+
+
                     <div class="bg-blue-100 p-4 rounded-md text-blue-800 border border-blue-200">
                         <p class="font-semibold">Em breve:</p>
                         <p>Vídeos demonstrativos, agendamento de sessões com personal trainers e feedback em tempo real!</p>
@@ -308,6 +333,24 @@
                                 data-id="pilates_iniciantes"
                                 data-type="Fisioterapia & Pilates"
                                 data-title="Rotina de Pilates para Iniciantes (Foco no Core)">
+                            Adicionar aos Favoritos ❤️
+                        </button>
+                    </div>
+
+                    <div class="mb-8 p-4 bg-gray-50 rounded-lg shadow-sm">
+                        <h3 class="text-2xl font-semibold text-blue-600 mb-4">Exercícios de Fisioterapia: Mobilidade da Coluna</h3>
+                        <ul class="list-disc list-inside text-gray-600 space-y-2 mb-4">
+                            <li><span class="exercise-detail-trigger" data-title="Gato-Camelo (Cat-Cow)" data-description="Comece de quatro, mãos abaixo dos ombros e joelhos abaixo dos quadris. Inspire, arqueie a coluna, olhando para cima (vaca). Expire, arredonde a coluna, puxando o umbigo para dentro (gato). Faça lentamente e com controle." data-image="https://placehold.co/400x250/D1FAE5/065F46?text=Fisio:+Gato-Camelo">Gato-Camelo (Cat-Cow)</span>: 3 séries de 10 repetições</li>
+                            <li><span class="exercise-detail-trigger" data-title="Rotação de Tronco Deitado" data-description="Deite-se de costas, joelhos flexionados e pés no chão. Mantenha os ombros no chão e deixe os joelhos caírem para um lado e depois para o outro, sentindo o alongamento na coluna." data-image="https://placehold.co/400x250/D1FAE5/065F46?text=Fisio:+Rotacao+Tronco">Rotação de Tronco Deitado</span>: 3 séries de 10 repetições para cada lado</li>
+                            <li><span class="exercise-detail-trigger" data-title="Alongamento de Joelho ao Peito" data-description="Deite-se de costas. Puxe um joelho em direção ao peito, segurando com as mãos, enquanto a outra perna permanece estendida. Mantenha por 20-30 segundos e troque de lado." data-image="https://placehold.co/400x250/D1FAE5/065F46?text=Fisio:+Joelho+ao+Peito">Alongamento de Joelho ao Peito</span>: 3 séries de 20-30 segundos por perna</li>
+                        </ul>
+                        <p class="text-md text-gray-700 mb-4">
+                            *Realize estes exercícios suavemente, focando na mobilidade e alívio de tensão.*
+                        </p>
+                        <button class="favorite-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
+                                data-id="fisio_mobilidade_coluna"
+                                data-type="Fisioterapia & Pilates"
+                                data-title="Exercícios de Fisioterapia: Mobilidade da Coluna">
                             Adicionar aos Favoritos ❤️
                         </button>
                     </div>
@@ -375,6 +418,34 @@
                                 data-id="receita_smoothie"
                                 data-type="Gastronomia"
                                 data-title="Smoothie Verde Energizante">
+                            Adicionar aos Favoritos ❤️
+                        </button>
+                    </div>
+
+                    <div class="mb-8 p-4 bg-gray-50 rounded-lg shadow-sm">
+                        <h3 class="text-2xl font-semibold text-blue-600 mb-4">Receita: Wrap de Frango com Vegetais Frescos 🌯</h3>
+                        <h4 class="text-xl font-medium text-gray-700 mb-2">Ingredientes:</h4>
+                        <ul class="list-disc list-inside text-gray-600 space-y-1 mb-4">
+                            <li>1 tortilla integral grande</li>
+                            <li>100g de peito de frango cozido e desfiado</li>
+                            <li>1/4 xícara de cenoura ralada</li>
+                            <li>1/4 xícara de repolho roxo picado</li>
+                            <li>2 folhas de alface grandes</li>
+                            <li>1 colher de sopa de iogurte natural (ou maionese light)</li>
+                            <li>1 colher de chá de mostarda dijon</li>
+                            <li>Sal e pimenta do reino a gosto</li>
+                        </ul>
+                        <h4 class="text-xl font-medium text-gray-700 mb-2">Modo de Preparo:</h4>
+                        <ol class="list-decimal list-inside text-gray-600 space-y-1 mb-4">
+                            <li>Em uma tigela, misture o frango desfiado, cenoura, repolho roxo, iogurte, mostarda, sal e pimenta.</li>
+                            <li>Espalhe as folhas de alface sobre a tortilla.</li>
+                            <li>Distribua a mistura de frango sobre a alface.</li>
+                            <li>Enrole a tortilla firmemente. Corte ao meio e sirva.</li>
+                        </ol>
+                        <button class="favorite-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
+                                data-id="receita_wrap_frango"
+                                data-type="Gastronomia"
+                                data-title="Wrap de Frango com Vegetais Frescos">
                             Adicionar aos Favoritos ❤️
                         </button>
                     </div>
