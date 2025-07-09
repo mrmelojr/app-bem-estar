@@ -9,7 +9,7 @@ const urlsToCache = [
   '/app-bem-estar/manifest.json',
   '/app-bem-estar/service-worker.js', // O próprio service worker
   // Placeholders para as imagens dos exercícios. Se você usar imagens reais, inclua-as aqui.
-  // Note que as URLs de placehold.co são externas e não precisam do prefixo /app-bem-estar/
+  // Note que as URLs de placehold.co são externas e NÃO precisam do prefixo /app-bem-estar/
   'https://placehold.co/400x250/E0E7FF/4338CA?text=Agachamento+Completo',
   'https://placehold.co/400x250/E0E7FF/4338CA?text=Flexao+de+Braco',
   'https://placehold.co/400x250/E0E7FF/4338CA?text=Remada+Curvada',
@@ -27,8 +27,7 @@ const urlsToCache = [
   'https://placehold.co/400x250/D1FAE5/065F46?text=Fisio:+Gato-Camelo',
   'https://placehold.co/400x250/D1FAE5/065F46?text=Fisio:+Rotacao+Tronco',
   'https://placehold.co/400x250/D1FAE5/065F46?text=Fisio:+Joelho+ao+Peito',
-  // Tailwind CSS CDN - é um recurso externo, mas pode ser cacheado
-  'https://cdn.tailwindcss.com'
+  // REMOVIDO: 'https://cdn.tailwindcss.com' para evitar erro de CORS no cache
 ];
 
 // Evento 'install': Disparado quando o Service Worker é instalado.
@@ -39,6 +38,9 @@ self.addEventListener('install', event => {
       .then(cache => {
         console.log('Service Worker: Cacheando arquivos essenciais.');
         return cache.addAll(urlsToCache);
+      })
+      .catch(error => {
+        console.error('Service Worker: Falha ao cachear URLs durante a instalação:', error);
       })
   );
 });
@@ -56,17 +58,19 @@ self.addEventListener('fetch', event => {
         // Caso contrário, faça a requisição à rede
         return fetch(event.request)
           .then(networkResponse => {
-            // Clona a resposta para que ela possa ser usada pelo cache e pelo navegador
-            const responseClone = networkResponse.clone();
-            // Tenta adicionar a resposta ao cache para futuras utilizações
-            caches.open(CACHE_NAME).then(cache => {
-              cache.put(event.request, responseClone);
-            });
+            // Clona a resposta APENAS se ela for válida para cache (ex: status 200 e não opaca)
+            // Recursos de outras origens (CORS) podem ser "opacos" e não podem ser inspecionados ou cacheados facilmente.
+            // Para simplificar, não vamos tentar cachear recursos externos que podem causar CORS aqui.
+            if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+                const responseClone = networkResponse.clone();
+                caches.open(CACHE_NAME).then(cache => {
+                    cache.put(event.request, responseClone);
+                });
+            }
             return networkResponse;
           })
           .catch(() => {
             // Se a requisição falhar (offline e não no cache), você pode retornar uma página offline
-            // Por enquanto, apenas logamos o erro.
             console.log('Service Worker: Falha ao buscar recurso e não está no cache.', event.request.url);
             // Poderíamos retornar uma página offline aqui, se tivéssemos uma
             // return caches.match('/offline.html');
