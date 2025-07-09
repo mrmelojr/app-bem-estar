@@ -187,23 +187,23 @@
 
         // Modal functions
         function openModal(title, description, imageUrl) {
-            console.log('openModal called with imageUrl:', imageUrl); // DEBUG LOG - ESTA LINHA É CRUCIAL!
+            console.log('openModal called with imageUrl:', imageUrl); // DEBUG LOG
             modalTitle.textContent = title;
             modalContentDetails.textContent = description;
 
-            // Sempre garanta que modalImage seja visível por padrão, depois esconda se não houver URL
-            modalImage.classList.remove('hidden'); // Garante que não esteja escondido inicialmente
-            modalNoImageText.classList.add('hidden'); // Esconda o texto "sem imagem" inicialmente
-            modalVideoPlaceholder.classList.remove('flex', 'items-center', 'justify-center'); // Remove o centramento se a imagem estiver presente
+            // Always ensure modalImage is visible by default, then hide if no URL
+            modalImage.classList.remove('hidden'); // Ensure it's not hidden initially
+            modalNoImageText.classList.add('hidden'); // Hide "no image" text initially
+            modalVideoPlaceholder.classList.remove('flex', 'items-center', 'justify-center'); // Remove centering if image is present
 
-            if (imageUrl && imageUrl.startsWith('http')) { // Verifique se é uma string de URL válida
+            if (imageUrl && imageUrl.startsWith('http')) { // Check if it's a valid URL string
                 modalImage.src = imageUrl;
-                // Não é necessário remover 'hidden' aqui, pois já foi removido acima.
+                // No need to remove 'hidden' here, as it's removed above.
             } else {
-                modalImage.classList.add('hidden'); // Esconda a imagem se a URL for inválida ou vazia
-                modalImage.src = ''; // Limpe o src
-                modalNoImageText.classList.remove('hidden'); // Mostre o texto "sem imagem"
-                modalVideoPlaceholder.classList.add('flex', 'items-center', 'justify-center'); // Adicione o centramento para o placeholder
+                modalImage.classList.add('hidden'); // Hide the image if URL is invalid or empty
+                modalImage.src = ''; // Clear src
+                modalNoImageText.classList.remove('hidden'); // Show "no image" text
+                modalVideoPlaceholder.classList.add('flex', 'items-center', 'justify-center'); // Add centering for placeholder
             }
 
             exerciseModal.classList.remove('hidden');
@@ -313,7 +313,7 @@
                 },
                 {
                     id: 'receita_wrap_frango',
-                    title: 'Receita: Wrap de Frango com Vegetais Frescos 🌯',
+                    title: 'Receita: Wrap de Frango com Vegetais Frescos �',
                     description: ``,
                     ingredients: [
                         '1 tortilla integral grande', '100g de peito de frango cozido e desfiado',
@@ -891,3 +891,4 @@
     </script>
 </body>
 </html>
+�
