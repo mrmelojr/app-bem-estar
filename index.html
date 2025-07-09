@@ -296,7 +296,7 @@
                 },
                 {
                     id: 'receita_smoothie',
-                    title: 'Receita: Smoothie Verde Energizante 🥤🌿',
+                    title: 'Receita: Smoothie Verde Energizante 🥤�',
                     description: ``,
                     ingredients: [
                         '1 xícara de espinafre fresco', '1/2 banana congelada', '1/2 maçã picada',
@@ -483,6 +483,18 @@
                             <p class="text-gray-600">Receitas nutritivas e saborosas para uma vida equilibrada, sem abrir mão do prazer.</p>
                         </div>
                     </div>
+                    <div class="mt-10 p-6 bg-purple-50 rounded-lg shadow-md">
+                        <h3 class="text-2xl font-semibold text-purple-700 mb-4">Receba Lembretes!</h3>
+                        <p class="text-gray-700 mb-4">
+                            Ative as notificações para receber lembretes de treinos, dicas de saúde e novas receitas!
+                        </p>
+                        <button id="request-notification-permission" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300">
+                            Ativar Notificações 🔔
+                        </button>
+                        <button id="send-test-notification" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300 ml-4 hidden">
+                            Enviar Notificação de Teste
+                        </button>
+                    </div>
                 </div>
             `,
             'favoritos': `
@@ -539,6 +551,10 @@
 
             } else {
                 appContent.innerHTML = pages[pageName];
+                // If on home page, attach notification listeners
+                if (pageName === 'home') {
+                    attachNotificationListeners();
+                }
             }
 
 
@@ -627,6 +643,12 @@
                 const textNode = document.createTextNode(spanContent);
                 trigger.parentNode.replaceChild(textNode, trigger);
             });
+            // Remove the notes textarea from the content before saving
+            const notesTextareaToRemove = tempDiv.querySelector('textarea[id^="notes-"]');
+            if (notesTextareaToRemove) {
+                notesTextareaToRemove.remove();
+            }
+
             itemContent = tempDiv.innerHTML;
 
             toggleFavorite(itemId, itemType, itemTitle, itemContent);
@@ -780,6 +802,60 @@
             addCompletedWorkout(workoutId, workoutTitle, notes);
         }
 
+        // --- PWA Notification Functions ---
+        function requestNotificationPermission() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        alertMessage('Permissão para notificações concedida!', 'bg-green-500');
+                        document.getElementById('send-test-notification').classList.remove('hidden');
+                    } else if (permission === 'denied') {
+                        alertMessage('Permissão para notificações negada.', 'bg-red-500');
+                    } else {
+                        alertMessage('Permissão para notificações ignorada.', 'bg-yellow-500');
+                    }
+                });
+            } else {
+                alertMessage('Este navegador não suporta notificações.', 'bg-red-500');
+            }
+        }
+
+        function sendTestNotification() {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                navigator.serviceWorker.ready.then(registration => {
+                    registration.showNotification('Lembrete do App de Bem-Estar!', {
+                        body: 'É hora de se exercitar ou preparar uma refeição saudável!',
+                        icon: '/app-bem-estar/https://placehold.co/192x192/2563eb/ffffff?text=App', // Use o ícone do seu manifest
+                        vibrate: [200, 100, 200], // Vibração (opcional)
+                        tag: 'test-notification' // Tag para agrupar notificações
+                    });
+                    alertMessage('Notificação de teste enviada!', 'bg-blue-500');
+                });
+            } else {
+                alertMessage('Permissão de notificação não concedida ou Service Worker não pronto.', 'bg-red-500');
+            }
+        }
+
+        function attachNotificationListeners() {
+            const requestBtn = document.getElementById('request-notification-permission');
+            const sendTestBtn = document.getElementById('send-test-notification');
+
+            if (requestBtn) {
+                requestBtn.removeEventListener('click', requestNotificationPermission);
+                requestBtn.addEventListener('click', requestNotificationPermission);
+            }
+            if (sendTestBtn) {
+                sendTestBtn.removeEventListener('click', sendTestNotification);
+                sendTestBtn.addEventListener('click', sendTestNotification);
+
+                // Check initial permission state
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    sendTestBtn.classList.remove('hidden');
+                }
+            }
+        }
+        // --- Fim das Funções de Notificação PWA ---
+
 
         // --- PWA Service Worker Registration ---
         if ('serviceWorker' in navigator) {
@@ -811,3 +887,4 @@
     </script>
 </body>
 </html>
+�
