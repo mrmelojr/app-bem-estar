@@ -21,6 +21,17 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transform: scale(1.05);
         }
+        /* Style for clickable exercise names */
+        .exercise-detail-trigger {
+            cursor: pointer;
+            color: #2563eb; /* blue-700 */
+            font-weight: bold;
+            text-decoration: underline;
+            transition: color 0.2s ease-in-out;
+        }
+        .exercise-detail-trigger:hover {
+            color: #1d4ed8; /* blue-800 */
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gray-100 font-sans antialiased flex flex-col">
@@ -61,6 +72,20 @@
         <p>&copy; <span id="current-year"></span> App de Bem-Estar Total. Todos os direitos reservados.</p>
     </footer>
 
+    <!-- Modal Structure -->
+    <div id="exercise-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg shadow-xl p-6 md:p-8 w-full max-w-md lg:max-w-xl relative">
+            <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
+            <h3 id="modal-title" class="text-3xl font-bold text-blue-700 mb-4"></h3>
+            <div id="modal-content-details" class="text-gray-700 text-lg leading-relaxed mb-6"></div>
+            <div id="modal-video-placeholder" class="w-full h-48 bg-gray-200 rounded-md flex items-center justify-center text-gray-500 text-sm overflow-hidden">
+                <!-- Placeholder for image or video -->
+                <img id="modal-image" src="" alt="Demonstração do Exercício" class="w-full h-full object-cover hidden">
+                <p id="modal-no-image-text" class="p-4 text-center">Nenhuma imagem/vídeo disponível para este exercício ainda.</p>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Get the current year for the footer
         document.getElementById('current-year').textContent = new Date().getFullYear();
@@ -68,6 +93,16 @@
         // Get references to main elements
         const appContent = document.getElementById('app-content');
         const navLinks = document.querySelectorAll('.nav-link');
+
+        // Modal elements
+        const exerciseModal = document.getElementById('exercise-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalTitle = document.getElementById('modal-title');
+        const modalContentDetails = document.getElementById('modal-content-details');
+        const modalImage = document.getElementById('modal-image');
+        const modalNoImageText = document.getElementById('modal-no-image-text');
+        const modalVideoPlaceholder = document.getElementById('modal-video-placeholder');
+
 
         // Helper function to generate a unique ID (simple for this example)
         function generateUniqueId(prefix) {
@@ -121,6 +156,39 @@
             }, 3000); // Disappear after 3 seconds
         }
 
+        // Modal functions
+        function openModal(title, description, imageUrl) {
+            modalTitle.textContent = title;
+            modalContentDetails.textContent = description; // Use textContent to prevent HTML injection
+
+            if (imageUrl) {
+                modalImage.src = imageUrl;
+                modalImage.classList.remove('hidden');
+                modalNoImageText.classList.add('hidden');
+                modalVideoPlaceholder.classList.remove('flex', 'items-center', 'justify-center'); // Remove centering if image is present
+            } else {
+                modalImage.classList.add('hidden');
+                modalImage.src = ''; // Clear src
+                modalNoImageText.classList.remove('hidden');
+                modalVideoPlaceholder.classList.add('flex', 'items-center', 'justify-center'); // Add centering if no image
+            }
+
+            exerciseModal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            exerciseModal.classList.add('hidden');
+            modalImage.src = ''; // Clear image src when closing
+        }
+
+        closeModalBtn.addEventListener('click', closeModal);
+        exerciseModal.addEventListener('click', (event) => {
+            if (event.target === exerciseModal) { // Close if clicked outside the modal content
+                closeModal();
+            }
+        });
+
+
         // Define content for each page
         const pages = {
             'home': `
@@ -159,22 +227,15 @@
                     <div class="mb-8 p-4 bg-gray-50 rounded-lg shadow-sm">
                         <h3 class="text-2xl font-semibold text-blue-600 mb-4">Treino Exemplo: Força Total (Iniciante)</h3>
                         <ul class="list-disc list-inside text-gray-600 space-y-2 mb-4">
-                            <li>**Agachamento (Squat):** 3 séries de 10-12 repetições 🏋️‍♀️</li>
-                            <li>**Flexão de Braço (Push-up):** 3 séries de 8-10 repetições (ou com joelhos no chão) 🤸‍♂️</li>
-                            <li>**Remada Curvada (Bent-over Row):** 3 séries de 10-12 repetições (com halteres ou elástico) 💪</li>
-                            <li>**Prancha (Plank):** 3 séries, segurar por 30-45 segundos 🧘</li>
-                            <li>**Afundo (Lunge):** 3 séries de 10 repetições por perna 🦵</li>
+                            <li><span class="exercise-detail-trigger" data-title="Agachamento (Squat)" data-description="O agachamento é um exercício fundamental para pernas e glúteos. Mantenha os pés na largura dos ombros, desça como se fosse sentar em uma cadeira, mantendo as costas retas e o peso nos calcanhares. Certifique-se de que seus joelhos não ultrapassem a linha dos pés. Suba controladamente." data-image="https://placehold.co/400x250/E0E7FF/4338CA?text=Agachamento">Agachamento (Squat)</span>: 3 séries de 10-12 repetições 🏋️‍♀️</li>
+                            <li><span class="exercise-detail-trigger" data-title="Flexão de Braço (Push-up)" data-description="A flexão de braço fortalece peito, ombros e tríceps. Comece em posição de prancha, desça o corpo até o peito quase tocar o chão, mantendo o corpo reto. Empurre de volta à posição inicial. Se for difícil, apoie os joelhos no chão." data-image="https://placehold.co/400x250/E0E7FF/4338CA?text=Flexao">Flexão de Braço (Push-up)</span>: 3 séries de 8-10 repetições (ou com joelhos no chão) 🤸‍♂️</li>
+                            <li><span class="exercise-detail-trigger" data-title="Remada Curvada (Bent-over Row)" data-description="A remada curvada trabalha as costas e bíceps. Com halteres ou elástico, incline o tronco para frente, mantendo as costas retas. Puxe o peso em direção ao abdômen, espremendo as omoplatas. Retorne controladamente." data-image="https://placehold.co/400x250/E0E7FF/4338CA?text=Remada">Remada Curvada (Bent-over Row)</span>: 3 séries de 10-12 repetições (com halteres ou elástico) 💪</li>
+                            <li><span class="exercise-detail-trigger" data-title="Prancha (Plank)" data-description="A prancha é excelente para fortalecer o core. Mantenha o corpo reto como uma tábua, apoiado nos antebraços e pontas dos pés. Contraia o abdômen e glúteos, evitando que o quadril caia ou suba demais." data-image="https://placehold.co/400x250/E0E7FF/4338CA?text=Prancha">Prancha (Plank)</span>: 3 séries, segurar por 30-45 segundos 🧘</li>
+                            <li><span class="exercise-detail-trigger" data-title="Afundo (Lunge)" data-description="O afundo trabalha pernas e glúteos de forma unilateral. Dê um passo à frente com uma perna, abaixando o quadril até que ambos os joelhos formem um ângulo de 90 graus. O joelho de trás quase toca o chão. Empurre para cima e repita com a outra perna." data-image="https://placehold.co/400x250/E0E7FF/4338CA?text=Afundo">Afundo (Lunge)</span>: 3 séries de 10 repetições por perna 🦵</li>
                         </ul>
                         <p class="text-md text-gray-700 mb-4">
                             *Descanse 60-90 segundos entre as séries. Realize este treino 2-3 vezes por semana.*
                         </p>
-                        <div class="mt-6 p-4 bg-blue-50 rounded-md border border-blue-100 text-center">
-                            <p class="text-lg font-semibold text-blue-700 mb-2">Visualização dos Exercícios</p>
-                            <p class="text-sm text-gray-600 mb-4">
-                                Imagine aqui desenhos ou GIFs animados demonstrando cada movimento para facilitar a execução!
-                            </p>
-                            <img src="https://placehold.co/300x150/E0E7FF/4338CA?text=Desenho+do+Exercicio" alt="Placeholder para desenho do exercício" class="mx-auto rounded-md shadow-md">
-                        </div>
                         <button class="favorite-btn mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
                                 data-id="treino_forca_total"
                                 data-type="Treino"
@@ -328,6 +389,8 @@
                 // Attach event listeners to favorite buttons on other pages
                 attachFavoriteButtonListeners();
                 updateFavoriteButtonStates();
+                // Attach event listeners for exercise details
+                attachExerciseDetailListeners();
             }
         }
 
@@ -348,11 +411,7 @@
             const itemTitle = button.dataset.title;
 
             // Get the content of the parent div (the entire item card)
-            // This needs to be robust to get the full content of the exercise/recipe block
             let itemContentElement = button.closest('.p-4.bg-gray-50.rounded-lg.shadow-sm');
-            if (!itemContentElement) { // Fallback if the direct parent isn't the desired container
-                itemContentElement = button.parentElement; // Try parent element
-            }
             let itemContent = itemContentElement ? itemContentElement.innerHTML : '';
 
             // Remove the favorite button HTML from the content before saving
@@ -427,6 +486,25 @@
                 });
             }
         }
+
+        // Function to attach listeners to exercise detail triggers
+        function attachExerciseDetailListeners() {
+            const detailTriggers = document.querySelectorAll('.exercise-detail-trigger');
+            detailTriggers.forEach(trigger => {
+                trigger.removeEventListener('click', handleExerciseDetailClick); // Prevent duplicate listeners
+                trigger.addEventListener('click', handleExerciseDetailClick);
+            });
+        }
+
+        function handleExerciseDetailClick(event) {
+            const trigger = event.target;
+            const title = trigger.dataset.title;
+            const description = trigger.dataset.description;
+            const imageUrl = trigger.dataset.image; // Use data-image for the URL
+
+            openModal(title, description, imageUrl);
+        }
+
 
         // Add event listeners to navigation buttons
         navLinks.forEach(link => {
