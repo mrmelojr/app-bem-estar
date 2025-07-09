@@ -48,35 +48,42 @@ self.addEventListener('install', event => {
 // Evento 'fetch': Disparado toda vez que o navegador tenta buscar um recurso.
 // Aqui, tentamos servir o recurso do cache primeiro, se disponível.
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Se o recurso estiver no cache, retorne-o
-        if (response) {
-          return response;
-        }
-        // Caso contrário, faça a requisição à rede
-        return fetch(event.request)
-          .then(networkResponse => {
-            // Clona a resposta APENAS se ela for válida para cache (ex: status 200 e não opaca)
-            // Recursos de outras origens (CORS) podem ser "opacos" e não podem ser inspecionados ou cacheados facilmente.
-            // Para simplificar, não vamos tentar cachear recursos externos que podem causar CORS aqui.
-            if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
-                const responseClone = networkResponse.clone();
-                caches.open(CACHE_NAME).then(cache => {
-                    cache.put(event.request, responseClone);
-                });
-            }
-            return networkResponse;
-          })
-          .catch(() => {
-            // Se a requisição falhar (offline e não no cache), você pode retornar uma página offline
-            console.log('Service Worker: Falha ao buscar recurso e não está no cache.', event.request.url);
-            // Poderíamos retornar uma página offline aqui, se tivéssemos uma
-            // return caches.match('/offline.html');
-          });
-      })
-  );
+  // Ignora requisições que não são http ou https (ex: chrome-extension://)
+  if (event.request.url.startsWith('http') || event.request.url.startsWith('https')) {
+    event.respondWith(
+      caches.match(event.request)
+        .then(response => {
+          // Se o recurso estiver no cache, retorne-o
+          if (response) {
+            return response;
+          }
+          // Caso contrário, faça a requisição à rede
+          return fetch(event.request)
+            .then(networkResponse => {
+              // Clona a resposta APENAS se ela for válida para cache (ex: status 200 e não opaca)
+              // Recursos de outras origens (CORS) podem ser "opacos" e não podem ser inspecionados ou cacheados facilmente.
+              // Para simplificar, não vamos tentar cachear recursos externos que podem causar CORS aqui.
+              if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+                  const responseClone = networkResponse.clone();
+                  caches.open(CACHE_NAME).then(cache => {
+                      cache.put(event.request, responseClone);
+                  });
+              }
+              return networkResponse;
+            })
+            .catch(() => {
+              // Se a requisição falhar (offline e não no cache), você pode retornar uma página offline
+              console.log('Service Worker: Falha ao buscar recurso e não está no cache.', event.request.url);
+              // Poderíamos retornar uma página offline aqui, se tivéssemos uma
+              // return caches.match('/offline.html');
+            });
+        })
+    );
+  } else {
+    // Para requisições que não são http/https (como chrome-extension://),
+    // simplesmente as deixa passar para o navegador lidar.
+    return fetch(event.request);
+  }
 });
 
 // Evento 'activate': Disparado quando o Service Worker é ativado.
