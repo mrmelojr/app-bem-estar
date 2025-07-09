@@ -74,7 +74,7 @@
             <h3 id="modal-title" class="text-3xl font-bold text-blue-700 mb-4"></h3>
             <div id="modal-content-details" class="text-gray-700 text-lg leading-relaxed mb-6"></div>
             <div id="modal-video-placeholder" class="w-full h-48 bg-gray-200 rounded-md flex items-center justify-center text-gray-500 text-sm overflow-hidden">
-                <img id="modal-image" src="" alt="Demonstração do Exercício" class="w-full h-full object-cover hidden">
+                <img id="modal-image" src="" alt="Demonstração do Exercício" class="w-full h-full object-cover">
                 <p id="modal-no-image-text" class="p-4 text-center hidden">Nenhuma imagem/vídeo disponível para este exercício ainda.</p>
             </div>
         </div>
@@ -326,194 +326,6 @@
             ]
         };
 
-        // Function to generate HTML for filterable items
-        function generateFilteredItemsHtml(pageName, filterText = '') {
-            let htmlContent = '';
-            const items = allContent[pageName];
-            const lowerCaseFilter = filterText.toLowerCase();
-            let itemsFound = false;
-
-            items.forEach(category => {
-                let categoryHtml = '';
-                let categoryMatches = false;
-
-                // Check if category title matches filter
-                if (category.title.toLowerCase().includes(lowerCaseFilter)) {
-                    categoryMatches = true;
-                }
-
-                // Build content for items/ingredients/preparation within the category
-                if (category.items) { // For Treinos and Fisioterapia/Pilates
-                    let itemsHtml = '';
-                    let anyItemMatches = false;
-                    category.items.forEach(item => {
-                        if (categoryMatches || item.name.toLowerCase().includes(lowerCaseFilter) || item.detail.toLowerCase().includes(lowerCaseFilter)) {
-                            itemsHtml += `
-                                <li><span class="exercise-detail-trigger"
-                                    data-title="${item.name}"
-                                    data-description="${item.detail}"
-                                    data-image="${item.image}">
-                                    ${item.name}
-                                </span>: ${item.series} ${item.emoji || ''}</li>
-                            `;
-                            anyItemMatches = true;
-                        }
-                    });
-                    if (itemsHtml) {
-                        categoryHtml += `<ul class="list-disc list-inside text-gray-600 space-y-2 mb-4">${itemsHtml}</ul>`;
-                    }
-                    if (categoryMatches || anyItemMatches) { itemsFound = true; }
-
-                } else if (category.ingredients && category.preparation) { // For Gastronomia
-                    let ingredientsHtml = '';
-                    let preparationHtml = '';
-                    let anyRecipePartMatches = false;
-
-                    category.ingredients.forEach(ing => {
-                        if (categoryMatches || ing.toLowerCase().includes(lowerCaseFilter)) {
-                            ingredientsHtml += `<li>${ing}</li>`;
-                            anyRecipePartMatches = true;
-                        }
-                    });
-                    if (ingredientsHtml) {
-                        categoryHtml += `<h4 class="text-xl font-medium text-gray-700 mb-2">Ingredientes:</h4>
-                                        <ul class="list-disc list-inside text-gray-600 space-y-1 mb-4">${ingredientsHtml}</ul>`;
-                    }
-
-                    category.preparation.forEach(prep => {
-                        if (categoryMatches || prep.toLowerCase().includes(lowerCaseFilter)) {
-                            preparationHtml += `<li>${prep}</li>`;
-                            anyRecipePartMatches = true;
-                        }
-                    });
-                    if (preparationHtml) {
-                        categoryHtml += `<h4 class="text-xl font-medium text-gray-700 mb-2">Modo de Preparo:</h4>
-                                        <ol class="list-decimal list-inside text-gray-600 space-y-1 mb-4">${preparationHtml}</ol>`;
-                    }
-                    if (categoryMatches || anyRecipePartMatches) { itemsFound = true; }
-                }
-
-                // Only render the category card if it or any of its sub-items match the filter
-                if (categoryMatches || categoryHtml) { // categoryHtml will be non-empty if items/ingredients/preparation matched
-                    htmlContent += `
-                        <div class="mb-8 p-4 bg-gray-50 rounded-lg shadow-sm">
-                            <h3 class="text-2xl font-semibold text-blue-600 mb-4">${category.title}</h3>
-                            ${category.description ? `<p class="text-lg text-gray-700 mb-4">${category.description}</p>` : ''}
-                            ${categoryHtml}
-                            ${category.notes ? `<p class="text-md text-gray-700 mb-4">${category.notes}</p>` : ''}
-                            <button class="favorite-btn mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
-                                    data-id="${category.id}"
-                                    data-type="${pageName === 'treinos' ? 'Treino' : (pageName === 'fisioterapia-pilates' ? 'Fisioterapia & Pilates' : 'Gastronomia')}"
-                                    data-title="${category.title}">
-                                Adicionar aos Favoritos ❤️
-                            </button>
-                    `;
-                    // Only add complete workout button for 'treinos'
-                    if (pageName === 'treinos') {
-                        htmlContent += `
-                            <div class="mt-4">
-                                <textarea id="notes-${category.id}" class="w-full p-2 border border-gray-300 rounded-md mb-2" rows="2" placeholder="Adicione suas notas aqui..."></textarea>
-                                <button class="complete-workout-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
-                                        data-id="${category.id}"
-                                        data-title="${category.title}">
-                                    Marcar como Concluído ✅
-                                </button>
-                            </div>
-                        `;
-                    }
-                    htmlContent += `</div>`;
-                }
-            });
-
-            if (!itemsFound && filterText) { // If filter is active but no items found
-                htmlContent = '<p class="text-lg text-gray-600 text-center">Nenhum item encontrado para a sua pesquisa.</p>';
-            } else if (!itemsFound && !filterText && items.length === 0) { // If no items at all
-                 htmlContent = '<p class="text-lg text-gray-600 text-center">Não há conteúdo disponível nesta seção ainda.</p>';
-            }
-
-
-            // Add the "Em breve" section
-            let soonHtml = '';
-            if (pageName === 'treinos') {
-                soonHtml = `<div class="bg-blue-100 p-4 rounded-md text-blue-800 border border-blue-200">
-                    <p class="font-semibold">Em breve:</p>
-                    <p>Vídeos demonstrativos, agendamento de sessões com personal trainers e feedback em tempo real!</p>
-                </div>`;
-            } else if (pageName === 'fisioterapia-pilates') {
-                soonHtml = `<div class="bg-green-100 p-4 rounded-md text-green-800 border border-green-200">
-                    <p class="font-semibold">Em breve:</p>
-                    <p>Sessões online com fisioterapeutas, aulas de Pilates ao vivo e programas de recuperação personalizados!</p>
-                </div>`;
-            } else if (pageName === 'gastronomia') {
-                soonHtml = `<div class="bg-yellow-100 p-4 rounded-md text-yellow-800 border border-yellow-200">
-                    <p class="font-semibold">Em breve:</p>
-                    <p>Planos alimentares personalizados, lista de compras inteligente e integração com nutricionistas!</p>
-                </div>`;
-            }
-
-            return htmlContent + soonHtml;
-        }
-
-
-        // Define content for non-filterable pages
-        const pages = {
-            'home': `
-                <div class="bg-white p-6 md:p-10 rounded-lg shadow-xl text-center">
-                    <h2 class="text-4xl font-extrabold text-blue-700 mb-6">Bem-vindo ao Seu Guia de Bem-Estar!</h2>
-                    <p class="text-lg text-gray-700 mb-8 leading-relaxed">
-                        Descubra uma nova forma de cuidar de si mesmo, unindo o melhor dos treinos personalizados,
-                        terapias de movimento e uma alimentação saudável e deliciosa.
-                    </p>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-blue-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center text-center">
-                            <div class="text-5xl mb-4">💪</div>
-                            <h3 class="text-2xl font-semibold text-blue-600 mb-3">Treinos Personalizados</h3>
-                            <p class="text-gray-600">Planos de treino adaptados aos seus objetivos, com acompanhamento profissional.</p>
-                        </div>
-                        <div class="bg-blue-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center text-center">
-                            <div class="text-5xl mb-4">🧘‍♀️</div>
-                            <h3 class="text-2xl font-semibold text-blue-600 mb-3">Fisioterapia & Pilates</h3>
-                            <p class="text-gray-600">Recupere-se e fortaleça seu corpo com sessões especializadas e instrutores qualificados.</p>
-                        </div>
-                        <div class="bg-blue-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center text-center">
-                            <div class="text-5xl mb-4">🥗</div>
-                            <h3 class="text-2xl font-semibold text-blue-600 mb-3">Gastronomia Saudável</h3>
-                            <p class="text-gray-600">Receitas nutritivas e saborosas para uma vida equilibrada, sem abrir mão do prazer.</p>
-                        </div>
-                    </div>
-                    <div class="mt-10 p-6 bg-purple-50 rounded-lg shadow-md">
-                        <h3 class="text-2xl font-semibold text-purple-700 mb-4">Receba Lembretes!</h3>
-                        <p class="text-gray-700 mb-4">
-                            Ative as notificações para receber lembretes de treinos, dicas de saúde e novas receitas!
-                        </p>
-                        <button id="request-notification-permission" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300">
-                            Ativar Notificações 🔔
-                        </button>
-                        <button id="send-test-notification" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300 ml-4 hidden">
-                            Enviar Notificação de Teste
-                        </button>
-                    </div>
-                </div>
-            `,
-            'favoritos': `
-                <div class="bg-white p-6 md:p-10 rounded-lg shadow-xl">
-                    <h2 class="text-3xl font-bold text-blue-700 mb-6">Meus Favoritos</h2>
-                    <div id="favorites-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                        </div>
-                    <p id="no-favorites-message" class="text-lg text-gray-600 text-center mt-8 hidden">
-                        Você ainda não tem itens favoritos. Adicione alguns para vê-los aqui!
-                    </p>
-
-                    <h2 class="text-3xl font-bold text-blue-700 mb-6 mt-10">Histórico de Treinos Concluídos</h2>
-                    <div id="completed-workouts-list" class="space-y-4">
-                        </div>
-                    <p id="no-completed-workouts-message" class="text-lg text-gray-600 text-center mt-8 hidden">
-                        Nenhum treino concluído ainda. Marque um treino para vê-lo aqui!
-                    </p>
-                </div>
-            `
-        };
-
         let currentPage = 'home'; // Keep track of the current page
 
         // Function to load page content
@@ -527,7 +339,8 @@
                         <h2 class="text-3xl font-bold text-blue-700 mb-6">Sua Jornada de Bem-Estar</h2>
                         <input type="text" id="search-input" placeholder="Pesquisar..." class="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <div id="filtered-items-container">
-                            </div>
+                           
+                        </div>
                     </div>
                 `;
                 const searchInput = document.getElementById('search-input');
