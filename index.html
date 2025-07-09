@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seu App de Bem-Estar Total</title>
     <!-- Link para o Manifesto do PWA -->
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="/app-bem-estar/manifest.json">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -145,7 +145,7 @@
             return completed ? JSON.parse(completed) : [];
         }
 
-        function addCompletedWorkout(workoutId, workoutTitle) {
+        function addCompletedWorkout(workoutId, workoutTitle, notes = '') {
             let completedWorkouts = getCompletedWorkouts();
             const now = new Date();
             const dateString = now.toLocaleDateString('pt-BR', {
@@ -155,7 +155,7 @@
                 hour: '2-digit',
                 minute: '2-digit'
             });
-            completedWorkouts.push({ id: workoutId, title: workoutTitle, date: dateString });
+            completedWorkouts.push({ id: workoutId, title: workoutTitle, date: dateString, notes: notes });
             saveCompletedWorkouts(completedWorkouts);
             alertMessage('Treino marcado como concluído!', 'bg-purple-500');
             // Re-render the current page to update button state (optional, but good for consistency)
@@ -230,7 +230,7 @@
                     items: [
                         { name: 'Agachamento (Squat)', detail: 'O agachamento é um exercício fundamental para pernas e glúteos. Mantenha os pés na largura dos ombros, desça como se fosse sentar em uma cadeira, mantendo as costas retas e o peso nos calcanhares. Certifique-se de que seus joelhos não ultrapassem a linha dos pés. Suba controladamente.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Agachamento+Completo', emoji: '🏋️‍♀️', series: '3 séries de 10-12 repetições' },
                         { name: 'Flexão de Braço (Push-up)', detail: 'A flexão de braço fortalece peito, ombros e tríceps. Comece em posição de prancha, desça o corpo até o peito quase tocar o chão, mantendo o corpo reto. Empurre de volta à posição inicial. Se for difícil, apoie os joelhos no chão.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Flexao+de+Braco', emoji: '🤸‍♂️', series: '3 séries de 8-10 repetições (ou com joelhos no chão)' },
-                        { name: 'Remada Curvada (Bent-over Row)', detail: 'A remada curvada trabalha as costas e bíceps. Com halteres ou elástico, incline o tronco para frente, mantendo as costas retas. Puxe o peso em direção ao abdômen, espremendo as omoplatas. Retorne controladamente.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Remada+Curvada', emoji: '�', series: '3 séries de 10-12 repetições (com halteres ou elástico)' },
+                        { name: 'Remada Curvada (Bent-over Row)', detail: 'A remada curvada trabalha as costas e bíceps. Com halteres ou elástico, incline o tronco para frente, mantendo as costas retas. Puxe o peso em direção ao abdômen, espremendo as omoplatas. Retorne controladamente.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Remada+Curvada', emoji: '💪', series: '3 séries de 10-12 repetições (com halteres ou elástico)' },
                         { name: 'Prancha (Plank)', detail: 'A prancha é excelente para fortalecer o core. Mantenha o corpo reto como uma tábua, apoiado nos antebraços e pontas dos pés. Contraia o abdômen e glúteos, evitando que o quadril caia ou suba demais.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Prancha+Frontal', emoji: '🧘', series: '3 séries, segurar por 30-45 segundos' },
                         { name: 'Afundo (Lunge)', detail: 'O afundo trabalha pernas e glúteos de forma unilateral. Dê um passo à frente com uma perna, abaixando o quadril até que ambos os joelhos formem um ângulo de 90 graus. O joelho de trás quase toca o chão. Empurre para cima e repita com a outra perna.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Afundo+Alternado', emoji: '🦵', series: '3 séries de 10 repetições por perna' }
                     ],
@@ -413,11 +413,14 @@
                     // Only add complete workout button for 'treinos'
                     if (pageName === 'treinos') {
                         htmlContent += `
-                            <button class="complete-workout-btn mt-2 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
-                                    data-id="${category.id}"
-                                    data-title="${category.title}">
-                                Marcar como Concluído ✅
-                            </button>
+                            <div class="mt-4">
+                                <textarea id="notes-${category.id}" class="w-full p-2 border border-gray-300 rounded-md mb-2" rows="2" placeholder="Adicione suas notas aqui..."></textarea>
+                                <button class="complete-workout-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
+                                        data-id="${category.id}"
+                                        data-title="${category.title}">
+                                    Marcar como Concluído ✅
+                                </button>
+                            </div>
                         `;
                     }
                     htmlContent += `</div>`;
@@ -707,6 +710,7 @@
                         <div>
                             <h4 class="text-lg font-semibold text-blue-600">${workout.title}</h4>
                             <p class="text-sm text-gray-500">Concluído em: ${workout.date}</p>
+                            ${workout.notes ? `<p class="text-sm text-gray-600 italic mt-1">Notas: ${workout.notes}</p>` : ''}
                         </div>
                         <button class="remove-completed-workout-btn bg-red-500 hover:bg-red-600 text-white text-sm font-bold py-1 px-3 rounded-full transition-colors duration-300"
                                 data-id="${workout.id}" data-date="${workout.date}">
@@ -771,14 +775,16 @@
             const button = event.target;
             const workoutId = button.dataset.id;
             const workoutTitle = button.dataset.title;
-            addCompletedWorkout(workoutId, workoutTitle);
+            const notesInput = document.getElementById(`notes-${workoutId}`);
+            const notes = notesInput ? notesInput.value : ''; // Get notes if input exists
+            addCompletedWorkout(workoutId, workoutTitle, notes);
         }
 
 
         // --- PWA Service Worker Registration ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
+                navigator.serviceWorker.register('/app-bem-estar/service-worker.js')
                     .then(registration => {
                         console.log('ServiceWorker registrado com sucesso:', registration);
                     })
@@ -805,4 +811,3 @@
     </script>
 </body>
 </html>
-�
