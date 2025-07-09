@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seu App de Bem-Estar Total</title>
-    <!-- Link para o Manifesto do PWA -->
     <link rel="manifest" href="/app-bem-estar/manifest.json">
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom styles for Inter font and text shadow */
@@ -38,7 +36,6 @@
 </head>
 <body class="min-h-screen bg-gray-100 font-sans antialiased flex flex-col">
 
-    <!-- Header and Navigation -->
     <header class="bg-gradient-to-r from-blue-600 to-purple-700 text-white shadow-lg p-4 md:p-6 rounded-b-lg">
         <div class="container mx-auto flex flex-col md:flex-row items-center justify-between">
             <h1 class="text-3xl md:text-4xl font-bold mb-4 md:mb-0 text-shadow-md">
@@ -64,26 +61,21 @@
         </div>
     </header>
 
-    <!-- Main content area -->
     <main id="app-content" class="flex-grow container mx-auto p-4 md:p-8">
-        <!-- Content will be loaded here by JavaScript -->
-    </main>
+        </main>
 
-    <!-- Footer -->
     <footer class="bg-gray-800 text-white p-4 md:p-6 text-center text-sm rounded-t-lg mt-8">
         <p>&copy; <span id="current-year"></span> App de Bem-Estar Total. Todos os direitos reservados.</p>
     </footer>
 
-    <!-- Modal Structure -->
     <div id="exercise-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-lg shadow-xl p-6 md:p-8 w-full max-w-md lg:max-w-xl relative">
             <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
             <h3 id="modal-title" class="text-3xl font-bold text-blue-700 mb-4"></h3>
             <div id="modal-content-details" class="text-gray-700 text-lg leading-relaxed mb-6"></div>
             <div id="modal-video-placeholder" class="w-full h-48 bg-gray-200 rounded-md flex items-center justify-center text-gray-500 text-sm overflow-hidden">
-                <!-- Placeholder for image or video -->
                 <img id="modal-image" src="" alt="Demonstração do Exercício" class="w-full h-full object-cover hidden">
-                <p id="modal-no-image-text" class="p-4 text-center">Nenhuma imagem/vídeo disponível para este exercício ainda.</p>
+                <p id="modal-no-image-text" class="p-4 text-center hidden">Nenhuma imagem/vídeo disponível para este exercício ainda.</p>
             </div>
         </div>
     </div>
@@ -260,7 +252,7 @@
                         prevenção de lesões e fortalecimento do core, essenciais para uma vida sem dores e com mais movimento.`,
                     items: [
                         { name: 'Cem (The Hundred)', detail: 'Deite-se de costas, pernas em 90 graus (mesa), levante a cabeça e ombros. Bombeie os braços para cima e para baixo 100 vezes, inspirando por 5 e expirando por 5. Mantenha o abdômen contraído e a lombar no chão.', image: 'https://placehold.co/400x250/D1FAE5/065F46?text=Cem+Pilates', emoji: '🌬️', series: '100 bombeamentos de braço, inspirando por 5 e expirando por 5' },
-                        { name: 'Ponte (Bridge)', detail: 'Deite-se de costas, joelhos flexionados, pés no chão. Levante o quadril do chão, articulando a coluna vértebra por vértebra, até formar uma linha reta dos ombros aos joelhos. Contraia glúteos e abdômen. Desça lentamente.', image: 'https://placehold.co/400x250/D1FAE5/065F46?text=Ponte+Pilates', emoji: '⬆️', series: '3 séries de 10-12 elevações de quadril' },
+                        { name: 'Ponte (Bridge)', detail: 'Deite-se de costas, joelhos flexionados, pés no chão. Levante o quadril do chão, articulando a coluna vértebra por vértebra, até formar uma linha reta dos ombros aos joelhos. Contraia glúteos e abdômen. Desça lentamente.', image: 'https://placehold.2o/400x250/D1FAE5/065F46?text=Ponte+Pilates', emoji: '⬆️', series: '3 séries de 10-12 elevações de quadril' },
                         { name: 'Rolamento para Cima (Roll-up)', detail: 'Deite-se de costas, braços estendidos acima da cabeça. Inspire e, ao expirar, levante a cabeça, ombros e tronco, enrolando a coluna para frente, como se fosse tocar os pés. Retorne desenrolando a coluna lentamente.', image: 'https://placehold.co/400x250/D1FAE5/065F46?text=Roll-up+Pilates', emoji: '🧘‍♀️', series: '3 séries de 8-10 repetições, controlando o movimento da coluna' },
                         { name: 'Single Leg Stretch', detail: 'Deite-se de costas, pernas em 90 graus. Leve um joelho ao peito enquanto a outra perna se estende para longe. Troque as pernas, mantendo o abdômen contraído e a lombar estável. Respire fluidamente.', image: 'https://placehold.co/400x250/D1FAE5/065F46?text=Single+Leg+Stretch', emoji: '🦵', series: '3 séries de 10-12 repetições por perna' },
                         { name: 'Alongamento da Coluna para Frente (Spine Stretch Forward)', detail: 'Sente-se com as pernas estendidas à frente, pés flexionados. Inspire, alongue a coluna. Ao expirar, curve o tronco para frente a partir do abdômen, alcançando os pés. Mantenha os ombros relaxados e a coluna em C. Retorne vértebra por vértebra.', image: 'https://placehold.co/400x250/D1FAE5/065F46?text=Spine+Stretch', emoji: '🤸‍♀️', series: '3 séries de 8-10 repetições' }
@@ -313,7 +305,7 @@
                 },
                 {
                     id: 'receita_wrap_frango',
-                    title: 'Receita: Wrap de Frango com Vegetais Frescos �',
+                    title: 'Receita: Wrap de Frango com Vegetais Frescos 🌯',
                     description: ``,
                     ingredients: [
                         '1 tortilla integral grande', '100g de peito de frango cozido e desfiado',
@@ -504,16 +496,14 @@
                 <div class="bg-white p-6 md:p-10 rounded-lg shadow-xl">
                     <h2 class="text-3xl font-bold text-blue-700 mb-6">Meus Favoritos</h2>
                     <div id="favorites-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                        <!-- Favorited items will be loaded here by JavaScript -->
-                    </div>
+                        </div>
                     <p id="no-favorites-message" class="text-lg text-gray-600 text-center mt-8 hidden">
                         Você ainda não tem itens favoritos. Adicione alguns para vê-los aqui!
                     </p>
 
                     <h2 class="text-3xl font-bold text-blue-700 mb-6 mt-10">Histórico de Treinos Concluídos</h2>
                     <div id="completed-workouts-list" class="space-y-4">
-                        <!-- Completed workouts will be loaded here by JavaScript -->
-                    </div>
+                        </div>
                     <p id="no-completed-workouts-message" class="text-lg text-gray-600 text-center mt-8 hidden">
                         Nenhum treino concluído ainda. Marque um treino para vê-lo aqui!
                     </p>
@@ -534,8 +524,7 @@
                         <h2 class="text-3xl font-bold text-blue-700 mb-6">Sua Jornada de Bem-Estar</h2>
                         <input type="text" id="search-input" placeholder="Pesquisar..." class="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <div id="filtered-items-container">
-                            <!-- Filtered items will be rendered here -->
-                        </div>
+                            </div>
                     </div>
                 `;
                 const searchInput = document.getElementById('search-input');
@@ -891,4 +880,3 @@
     </script>
 </body>
 </html>
-�
