@@ -2,22 +2,31 @@
 const CACHE_NAME = 'wellness-app-cache-v1';
 
 // Lista de arquivos essenciais para o funcionamento offline
-// Inclua todos os arquivos HTML, CSS, JS e imagens que seu app precisa para funcionar offline
+// INCLUA O CAMINHO DA SUBPASTA DO SEU REPOSITÓRIO AQUI
 const urlsToCache = [
-  '/', // A raiz do seu site
-  '/index.html',
-  '/manifest.json',
+  '/app-bem-estar/', // A raiz do seu aplicativo na subpasta
+  '/app-bem-estar/index.html',
+  '/app-bem-estar/manifest.json',
+  '/app-bem-estar/service-worker.js', // O próprio service worker
   // Placeholders para as imagens dos exercícios. Se você usar imagens reais, inclua-as aqui.
-  'https://placehold.co/400x250/E0E7FF/4338CA?text=Agachamento',
-  'https://placehold.co/400x250/E0E7FF/4338CA?text=Flexao',
-  'https://placehold.co/400x250/E0E7FF/4338CA?text=Remada',
-  'https://placehold.co/400x250/E0E7FF/4338CA?text=Prancha',
-  'https://placehold.co/400x250/E0E7FF/4338CA?text=Afundo',
-  'https://placehold.co/400x250/D1FAE5/065F46?text=The+Hundred',
-  'https://placehold.co/400x250/D1FAE5/065F46?text=Bridge',
-  'https://placehold.co/400x250/D1FAE5/065F46?text=Roll-up',
-  'https://placehold.co/400x250/D1FAE5/065F46?text=Single+Leg+Stretch',
-  'https://placehold.co/400x250/D1FAE5/065F46?text=Spine+Stretch',
+  // Note que as URLs de placehold.co são externas e não precisam do prefixo /app-bem-estar/
+  'https://placehold.co/400x250/E0E7FF/4338CA?text=Agachamento+Completo',
+  'https://placehold.co/400x250/E0E7FF/4338CA?text=Flexao+de+Braco',
+  'https://placehold.co/400x250/E0E7FF/4338CA?text=Remada+Curvada',
+  'https://placehold.co/400x250/E0E7FF/4338CA?text=Prancha+Frontal',
+  'https://placehold.co/400x250/E0E7FF/4338CA?text=Afundo+Alternado',
+  'https://placehold.co/400x250/E0E7FF/4338CA?text=Polichinelos',
+  'https://placehold.co/400x250/E0E7FF/4338CA?text=Corrida+no+Lugar',
+  'https://placehold.co/400x250/E0E7FF/4338CA?text=Burpee',
+  'https://placehold.co/400x250/E0E7FF/4338CA?text=Mountain+Climbers',
+  'https://placehold.co/400x250/D1FAE5/065F46?text=Pilates:+The+Hundred',
+  'https://placehold.co/400x250/D1FAE5/065F46?text=Pilates:+Bridge',
+  'https://placehold.co/400x250/D1FAE5/065F46?text=Pilates:+Roll-up',
+  'https://placehold.co/400x250/D1FAE5/065F46?text=Pilates:+Single+Leg+Stretch',
+  'https://placehold.co/400x250/D1FAE5/065F46?text=Pilates:+Spine+Stretch',
+  'https://placehold.co/400x250/D1FAE5/065F46?text=Fisio:+Gato-Camelo',
+  'https://placehold.co/400x250/D1FAE5/065F46?text=Fisio:+Rotacao+Tronco',
+  'https://placehold.co/400x250/D1FAE5/065F46?text=Fisio:+Joelho+ao+Peito',
   // Tailwind CSS CDN - é um recurso externo, mas pode ser cacheado
   'https://cdn.tailwindcss.com'
 ];
