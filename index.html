@@ -219,8 +219,8 @@
         });
 
 
-        // Define content for each page
-        const allContent = { // Store all content here to filter
+        // Define all content here to filter
+        const allContent = {
             'treinos': [
                 {
                     id: 'treino_forca_total',
@@ -230,7 +230,7 @@
                     items: [
                         { name: 'Agachamento (Squat)', detail: 'O agachamento é um exercício fundamental para pernas e glúteos. Mantenha os pés na largura dos ombros, desça como se fosse sentar em uma cadeira, mantendo as costas retas e o peso nos calcanhares. Certifique-se de que seus joelhos não ultrapassem a linha dos pés. Suba controladamente.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Agachamento+Completo', emoji: '🏋️‍♀️', series: '3 séries de 10-12 repetições' },
                         { name: 'Flexão de Braço (Push-up)', detail: 'A flexão de braço fortalece peito, ombros e tríceps. Comece em posição de prancha, desça o corpo até o peito quase tocar o chão, mantendo o corpo reto. Empurre de volta à posição inicial. Se for difícil, apoie os joelhos no chão.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Flexao+de+Braco', emoji: '🤸‍♂️', series: '3 séries de 8-10 repetições (ou com joelhos no chão)' },
-                        { name: 'Remada Curvada (Bent-over Row)', detail: 'A remada curvada trabalha as costas e bíceps. Com halteres ou elástico, incline o tronco para frente, mantendo as costas retas. Puxe o peso em direção ao abdômen, espremendo as omoplatas. Retorne controladamente.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Remada+Curvada', emoji: '💪', series: '3 séries de 10-12 repetições (com halteres ou elástico)' },
+                        { name: 'Remada Curvada (Bent-over Row)', detail: 'A remada curvada trabalha as costas e bíceps. Com halteres ou elástico, incline o tronco para frente, mantendo as costas retas. Puxe o peso em direção ao abdômen, espremendo as omoplatas. Retorne controladamente.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Remada+Curvada', emoji: '�', series: '3 séries de 10-12 repetições (com halteres ou elástico)' },
                         { name: 'Prancha (Plank)', detail: 'A prancha é excelente para fortalecer o core. Mantenha o corpo reto como uma tábua, apoiado nos antebraços e pontas dos pés. Contraia o abdômen e glúteos, evitando que o quadril caia ou suba demais.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Prancha+Frontal', emoji: '🧘', series: '3 séries, segurar por 30-45 segundos' },
                         { name: 'Afundo (Lunge)', detail: 'O afundo trabalha pernas e glúteos de forma unilateral. Dê um passo à frente com uma perna, abaixando o quadril até que ambos os joelhos formem um ângulo de 90 graus. O joelho de trás quase toca o chão. Empurre para cima e repita com a outra perna.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Afundo+Alternado', emoji: '🦵', series: '3 séries de 10 repetições por perna' }
                     ],
@@ -296,7 +296,7 @@
                 },
                 {
                     id: 'receita_smoothie',
-                    title: 'Receita: Smoothie Verde Energizante 🥤�',
+                    title: 'Receita: Smoothie Verde Energizante 🥤🌿',
                     description: ``,
                     ingredients: [
                         '1 xícara de espinafre fresco', '1/2 banana congelada', '1/2 maçã picada',
@@ -328,72 +328,80 @@
             ]
         };
 
-        // Function to render content for Treinos, Fisioterapia & Pilates, and Gastronomia
-        function renderContentPage(pageName, filterText = '') {
+        // Function to generate HTML for filterable items
+        function generateFilteredItemsHtml(pageName, filterText = '') {
             let htmlContent = '';
             const items = allContent[pageName];
             const lowerCaseFilter = filterText.toLowerCase();
+            let itemsFound = false;
 
             items.forEach(category => {
-                // Check if the category title or any item within it matches the filter
-                const categoryMatches = category.title.toLowerCase().includes(lowerCaseFilter);
-                const itemsMatching = category.items ? category.items.filter(item =>
-                    item.name.toLowerCase().includes(lowerCaseFilter) ||
-                    item.detail.toLowerCase().includes(lowerCaseFilter)
-                ) : [];
+                let categoryHtml = '';
+                let categoryMatches = false;
 
-                const ingredientsMatching = category.ingredients ? category.ingredients.filter(ing =>
-                    ing.toLowerCase().includes(lowerCaseFilter)
-                ) : [];
-                const preparationMatching = category.preparation ? category.preparation.filter(prep =>
-                    prep.toLowerCase().includes(lowerCaseFilter)
-                ) : [];
+                // Check if category title matches filter
+                if (category.title.toLowerCase().includes(lowerCaseFilter)) {
+                    categoryMatches = true;
+                }
 
-                const showCategory = categoryMatches || itemsMatching.length > 0 || ingredientsMatching.length > 0 || preparationMatching.length > 0;
+                // Build content for items/ingredients/preparation within the category
+                if (category.items) { // For Treinos and Fisioterapia/Pilates
+                    let itemsHtml = '';
+                    let anyItemMatches = false;
+                    category.items.forEach(item => {
+                        if (categoryMatches || item.name.toLowerCase().includes(lowerCaseFilter) || item.detail.toLowerCase().includes(lowerCaseFilter)) {
+                            itemsHtml += `
+                                <li><span class="exercise-detail-trigger"
+                                    data-title="${item.name}"
+                                    data-description="${item.detail}"
+                                    data-image="${item.image}">
+                                    ${item.name}
+                                </span>: ${item.series} ${item.emoji || ''}</li>
+                            `;
+                            anyItemMatches = true;
+                        }
+                    });
+                    if (itemsHtml) {
+                        categoryHtml += `<ul class="list-disc list-inside text-gray-600 space-y-2 mb-4">${itemsHtml}</ul>`;
+                    }
+                    if (categoryMatches || anyItemMatches) { itemsFound = true; }
 
-                if (showCategory) {
+                } else if (category.ingredients && category.preparation) { // For Gastronomia
+                    let ingredientsHtml = '';
+                    let preparationHtml = '';
+                    let anyRecipePartMatches = false;
+
+                    category.ingredients.forEach(ing => {
+                        if (categoryMatches || ing.toLowerCase().includes(lowerCaseFilter)) {
+                            ingredientsHtml += `<li>${ing}</li>`;
+                            anyRecipePartMatches = true;
+                        }
+                    });
+                    if (ingredientsHtml) {
+                        categoryHtml += `<h4 class="text-xl font-medium text-gray-700 mb-2">Ingredientes:</h4>
+                                        <ul class="list-disc list-inside text-gray-600 space-y-1 mb-4">${ingredientsHtml}</ul>`;
+                    }
+
+                    category.preparation.forEach(prep => {
+                        if (categoryMatches || prep.toLowerCase().includes(lowerCaseFilter)) {
+                            preparationHtml += `<li>${prep}</li>`;
+                            anyRecipePartMatches = true;
+                        }
+                    });
+                    if (preparationHtml) {
+                        categoryHtml += `<h4 class="text-xl font-medium text-gray-700 mb-2">Modo de Preparo:</h4>
+                                        <ol class="list-decimal list-inside text-gray-600 space-y-1 mb-4">${preparationHtml}</ol>`;
+                    }
+                    if (categoryMatches || anyRecipePartMatches) { itemsFound = true; }
+                }
+
+                // Only render the category card if it or any of its sub-items match the filter
+                if (categoryMatches || categoryHtml) { // categoryHtml will be non-empty if items/ingredients/preparation matched
                     htmlContent += `
                         <div class="mb-8 p-4 bg-gray-50 rounded-lg shadow-sm">
                             <h3 class="text-2xl font-semibold text-blue-600 mb-4">${category.title}</h3>
                             ${category.description ? `<p class="text-lg text-gray-700 mb-4">${category.description}</p>` : ''}
-                    `;
-
-                    if (category.items) { // For Treinos and Fisioterapia/Pilates
-                        htmlContent += `<ul class="list-disc list-inside text-gray-600 space-y-2 mb-4">`;
-                        category.items.forEach(item => {
-                            // Only display item if it matches filter or if no filter
-                            if (!filterText || item.name.toLowerCase().includes(lowerCaseFilter) || item.detail.toLowerCase().includes(lowerCaseFilter)) {
-                                htmlContent += `
-                                    <li><span class="exercise-detail-trigger"
-                                        data-title="${item.name}"
-                                        data-description="${item.detail}"
-                                        data-image="${item.image}">
-                                        ${item.name}
-                                    </span>: ${item.series} ${item.emoji || ''}</li>
-                                `;
-                            }
-                        });
-                        htmlContent += `</ul>`;
-                    } else if (category.ingredients && category.preparation) { // For Gastronomia
-                        htmlContent += `<h4 class="text-xl font-medium text-gray-700 mb-2">Ingredientes:</h4>
-                            <ul class="list-disc list-inside text-gray-600 space-y-1 mb-4">`;
-                        category.ingredients.forEach(ing => {
-                            if (!filterText || ing.toLowerCase().includes(lowerCaseFilter)) {
-                                htmlContent += `<li>${ing}</li>`;
-                            }
-                        });
-                        htmlContent += `</ul>
-                            <h4 class="text-xl font-medium text-gray-700 mb-2">Modo de Preparo:</h4>
-                            <ol class="list-decimal list-inside text-gray-600 space-y-1 mb-4">`;
-                        category.preparation.forEach(prep => {
-                            if (!filterText || prep.toLowerCase().includes(lowerCaseFilter)) {
-                                htmlContent += `<li>${prep}</li>`;
-                            }
-                        });
-                        htmlContent += `</ol>`;
-                    }
-
-                    htmlContent += `
+                            ${categoryHtml}
                             ${category.notes ? `<p class="text-md text-gray-700 mb-4">${category.notes}</p>` : ''}
                             <button class="favorite-btn mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
                                     data-id="${category.id}"
@@ -416,6 +424,13 @@
                 }
             });
 
+            if (!itemsFound && filterText) { // If filter is active but no items found
+                htmlContent = '<p class="text-lg text-gray-600 text-center">Nenhum item encontrado para a sua pesquisa.</p>';
+            } else if (!itemsFound && !filterText && items.length === 0) { // If no items at all
+                 htmlContent = '<p class="text-lg text-gray-600 text-center">Não há conteúdo disponível nesta seção ainda.</p>';
+            }
+
+
             // Add the "Em breve" section
             let soonHtml = '';
             if (pageName === 'treinos') {
@@ -435,17 +450,11 @@
                 </div>`;
             }
 
-            return `
-                <div class="bg-white p-6 md:p-10 rounded-lg shadow-xl">
-                    <h2 class="text-3xl font-bold text-blue-700 mb-6">Sua Jornada de Bem-Estar</h2>
-                    <input type="text" id="search-input" placeholder="Pesquisar..." class="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    ${htmlContent || '<p class="text-lg text-gray-600 text-center">Nenhum item encontrado para a sua pesquisa.</p>'}
-                    ${soonHtml}
-                </div>
-            `;
+            return htmlContent + soonHtml;
         }
 
 
+        // Define content for non-filterable pages
         const pages = {
             'home': `
                 <div class="bg-white p-6 md:p-10 rounded-lg shadow-xl text-center">
@@ -473,9 +482,6 @@
                     </div>
                 </div>
             `,
-            'treinos': '', // Will be generated by renderContentPage
-            'fisioterapia-pilates': '', // Will be generated by renderContentPage
-            'gastronomia': '', // Will be generated by renderContentPage
             'favoritos': `
                 <div class="bg-white p-6 md:p-10 rounded-lg shadow-xl">
                     <h2 class="text-3xl font-bold text-blue-700 mb-6">Meus Favoritos</h2>
@@ -502,15 +508,32 @@
         // Function to load page content
         function loadPage(pageName, filterText = '') {
             currentPage = pageName; // Update current page
+
             if (pageName === 'treinos' || pageName === 'fisioterapia-pilates' || pageName === 'gastronomia') {
-                appContent.innerHTML = renderContentPage(pageName, filterText);
+                // Render the main structure with search input only once
+                appContent.innerHTML = `
+                    <div class="bg-white p-6 md:p-10 rounded-lg shadow-xl">
+                        <h2 class="text-3xl font-bold text-blue-700 mb-6">Sua Jornada de Bem-Estar</h2>
+                        <input type="text" id="search-input" placeholder="Pesquisar..." class="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <div id="filtered-items-container">
+                            <!-- Filtered items will be rendered here -->
+                        </div>
+                    </div>
+                `;
                 const searchInput = document.getElementById('search-input');
+                const filteredItemsContainer = document.getElementById('filtered-items-container');
+
                 if (searchInput) {
                     searchInput.value = filterText; // Set the search input value
-                    searchInput.addEventListener('input', (event) => {
-                        loadPage(pageName, event.target.value); // Reload page with filter
-                    });
+                    searchInput.focus(); // Keep focus on the input
+                    // Remove existing listener to prevent duplicates
+                    searchInput.removeEventListener('input', handleSearchInput);
+                    searchInput.addEventListener('input', handleSearchInput);
                 }
+
+                // Initial render of filtered items
+                filteredItemsContainer.innerHTML = generateFilteredItemsHtml(pageName, filterText);
+
             } else {
                 appContent.innerHTML = pages[pageName];
             }
@@ -542,6 +565,20 @@
                 attachCompleteWorkoutListeners();
             }
         }
+
+        // Handler for search input
+        function handleSearchInput(event) {
+            const filterText = event.target.value;
+            const filteredItemsContainer = document.getElementById('filtered-items-container');
+            if (filteredItemsContainer) {
+                filteredItemsContainer.innerHTML = generateFilteredItemsHtml(currentPage, filterText);
+                attachFavoriteButtonListeners(); // Re-attach listeners after content update
+                updateFavoriteButtonStates(); // Update favorite button states
+                attachExerciseDetailListeners(); // Re-attach detail listeners
+                attachCompleteWorkoutListeners(); // Re-attach complete workout listeners
+            }
+        }
+
 
         // Function to attach listeners to favorite buttons
         function attachFavoriteButtonListeners() {
