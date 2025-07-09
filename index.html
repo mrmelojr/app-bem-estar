@@ -190,15 +190,18 @@
 
             if (imageUrl && imageUrl.startsWith('http')) { // Check if it's a valid URL string
                 modalImage.src = imageUrl;
-                // No need to remove 'hidden' here, as it's removed above.
+                console.log('Modal Image Source set to:', modalImage.src); // NOVO LOG
+                console.log('Is modalImage hidden by class?', modalImage.classList.contains('hidden')); // NOVO LOG
             } else {
                 modalImage.classList.add('hidden'); // Hide the image if URL is invalid or empty
                 modalImage.src = ''; // Clear src
                 modalNoImageText.classList.remove('hidden'); // Show "no image" text
                 modalVideoPlaceholder.classList.add('flex', 'items-center', 'justify-center'); // Add centering for placeholder
+                console.log('No valid imageUrl, modalImage is hidden and src cleared.'); // NOVO LOG
             }
 
             exerciseModal.classList.remove('hidden');
+            console.log('Exercise Modal is now visible.'); // NOVO LOG
         }
 
         function closeModal() {
@@ -252,7 +255,7 @@
                         prevenção de lesões e fortalecimento do core, essenciais para uma vida sem dores e com mais movimento.`,
                     items: [
                         { name: 'Cem (The Hundred)', detail: 'Deite-se de costas, pernas em 90 graus (mesa), levante a cabeça e ombros. Bombeie os braços para cima e para baixo 100 vezes, inspirando por 5 e expirando por 5. Mantenha o abdômen contraído e a lombar no chão.', image: 'https://placehold.co/400x250/D1FAE5/065F46?text=Cem+Pilates', emoji: '🌬️', series: '100 bombeamentos de braço, inspirando por 5 e expirando por 5' },
-                        { name: 'Ponte (Bridge)', detail: 'Deite-se de costas, joelhos flexionados, pés no chão. Levante o quadril do chão, articulando a coluna vértebra por vértebra, até formar uma linha reta dos ombros aos joelhos. Contraia glúteos e abdômen. Desça lentamente.', image: 'https://placehold.2o/400x250/D1FAE5/065F46?text=Ponte+Pilates', emoji: '⬆️', series: '3 séries de 10-12 elevações de quadril' },
+                        { name: 'Ponte (Bridge)', detail: 'Deite-se de costas, joelhos flexionados, pés no chão. Levante o quadril do chão, articulando a coluna vértebra por vértebra, até formar uma linha reta dos ombros aos joelhos. Contraia glúteos e abdômen. Desça lentamente.', image: 'https://placehold.co/400x250/D1FAE5/065F46?text=Ponte+Pilates', emoji: '⬆️', series: '3 séries de 10-12 elevações de quadril' },
                         { name: 'Rolamento para Cima (Roll-up)', detail: 'Deite-se de costas, braços estendidos acima da cabeça. Inspire e, ao expirar, levante a cabeça, ombros e tronco, enrolando a coluna para frente, como se fosse tocar os pés. Retorne desenrolando a coluna lentamente.', image: 'https://placehold.co/400x250/D1FAE5/065F46?text=Roll-up+Pilates', emoji: '🧘‍♀️', series: '3 séries de 8-10 repetições, controlando o movimento da coluna' },
                         { name: 'Single Leg Stretch', detail: 'Deite-se de costas, pernas em 90 graus. Leve um joelho ao peito enquanto a outra perna se estende para longe. Troque as pernas, mantendo o abdômen contraído e a lombar estável. Respire fluidamente.', image: 'https://placehold.co/400x250/D1FAE5/065F46?text=Single+Leg+Stretch', emoji: '🦵', series: '3 séries de 10-12 repetições por perna' },
                         { name: 'Alongamento da Coluna para Frente (Spine Stretch Forward)', detail: 'Sente-se com as pernas estendidas à frente, pés flexionados. Inspire, alongue a coluna. Ao expirar, curve o tronco para frente a partir do abdômen, alcançando os pés. Mantenha os ombros relaxados e a coluna em C. Retorne vértebra por vértebra.', image: 'https://placehold.co/400x250/D1FAE5/065F46?text=Spine+Stretch', emoji: '🤸‍♀️', series: '3 séries de 8-10 repetições' }
