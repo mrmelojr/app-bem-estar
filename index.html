@@ -169,7 +169,8 @@
             } else {
                 modalImage.classList.add('hidden');
                 modalImage.src = ''; // Clear src
-                modalNoImageText.classList.remove('hidden');
+                modalNoImageText.classList.remove('hidden'); // Ensure it's not hidden if no image
+                // If no image, display the placeholder text instead of hiding it
                 modalVideoPlaceholder.classList.add('flex', 'items-center', 'justify-center'); // Add centering if no image
             }
 
@@ -260,11 +261,11 @@
                     <div class="mb-8 p-4 bg-gray-50 rounded-lg shadow-sm">
                         <h3 class="text-2xl font-semibold text-blue-600 mb-4">Rotina de Pilates para Iniciantes (Foco no Core)</h3>
                         <ul class="list-disc list-inside text-gray-600 space-y-2 mb-4">
-                            <li>**Cem (The Hundred):** 100 bombeamentos de braço, inspirando por 5 e expirando por 5. 🌬️</li>
-                            <li>**Ponte (Bridge):** 3 séries de 10-12 elevações de quadril. ⬆️</li>
-                            <li>**Rolamento para Cima (Roll-up):** 3 séries de 8-10 repetições, controlando o movimento da coluna. 🧘‍♀️</li>
-                            <li>**Single Leg Stretch:** 3 séries de 10-12 repetições por perna. 🦵</li>
-                            <li>**Alongamento da Coluna para Frente (Spine Stretch Forward):** 3 séries de 8-10 repetições. 🤸‍♀️</li>
+                            <li><span class="exercise-detail-trigger" data-title="Cem (The Hundred)" data-description="Deite-se de costas, pernas em 90 graus (mesa), levante a cabeça e ombros. Bombeie os braços para cima e para baixo 100 vezes, inspirando por 5 e expirando por 5. Mantenha o abdômen contraído e a lombar no chão." data-image="https://placehold.co/400x250/D1FAE5/065F46?text=The+Hundred">Cem (The Hundred)</span>: 100 bombeamentos de braço, inspirando por 5 e expirando por 5. 🌬️</li>
+                            <li><span class="exercise-detail-trigger" data-title="Ponte (Bridge)" data-description="Deite-se de costas, joelhos flexionados, pés no chão. Levante o quadril do chão, articulando a coluna vértebra por vértebra, até formar uma linha reta dos ombros aos joelhos. Contraia glúteos e abdômen. Desça lentamente." data-image="https://placehold.co/400x250/D1FAE5/065F46?text=Bridge">Ponte (Bridge)</span>: 3 séries de 10-12 elevações de quadril. ⬆️</li>
+                            <li><span class="exercise-detail-trigger" data-title="Rolamento para Cima (Roll-up)" data-description="Deite-se de costas, braços estendidos acima da cabeça. Inspire e, ao expirar, levante a cabeça, ombros e tronco, enrolando a coluna para frente, como se fosse tocar os pés. Retorne desenrolando a coluna lentamente." data-image="https://placehold.co/400x250/D1FAE5/065F46?text=Roll-up">Rolamento para Cima (Roll-up)</span>: 3 séries de 8-10 repetições, controlando o movimento da coluna. 🧘‍♀️</li>
+                            <li><span class="exercise-detail-trigger" data-title="Single Leg Stretch" data-description="Deite-se de costas, pernas em 90 graus. Leve um joelho ao peito enquanto a outra perna se estende para longe. Troque as pernas, mantendo o abdômen contraído e a lombar estável. Respire fluidamente." data-image="https://placehold.co/400x250/D1FAE5/065F46?text=Single+Leg+Stretch">Single Leg Stretch</span>: 3 séries de 10-12 repetições por perna. 🦵</li>
+                            <li><span class="exercise-detail-trigger" data-title="Alongamento da Coluna para Frente (Spine Stretch Forward)" data-description="Sente-se com as pernas estendidas à frente, pés flexionados. Inspire, alongue a coluna. Ao expirar, curve o tronco para frente a partir do abdômen, alcançando os pés. Mantenha os ombros relaxados e a coluna em C. Retorne vértebra por vértebra." data-image="https://placehold.co/400x250/D1FAE5/065F46?text=Spine+Stretch">Alongamento da Coluna para Frente (Spine Stretch Forward)</span>: 3 séries de 8-10 repetições. 🤸‍♀️</li>
                         </ul>
                         <p class="text-md text-gray-700 mb-4">
                             *Concentre-se na respiração e no controle dos movimentos. Faça 2-3 vezes por semana.*
@@ -421,11 +422,18 @@
             if (btnToRemove) {
                 btnToRemove.remove();
             }
-            // Also remove the placeholder image section if it exists
+            // Also remove the placeholder image section if it exists (only for Treinos)
             const imgSectionToRemove = tempDiv.querySelector('.mt-6.p-4.bg-blue-50.rounded-md.border.border-blue-100.text-center');
             if (imgSectionToRemove) {
                 imgSectionToRemove.remove();
             }
+            // Remove the exercise-detail-trigger spans from the content before saving
+            const triggersToRemove = tempDiv.querySelectorAll('.exercise-detail-trigger');
+            triggersToRemove.forEach(trigger => {
+                const spanContent = trigger.innerHTML;
+                const textNode = document.createTextNode(spanContent);
+                trigger.parentNode.replaceChild(textNode, trigger);
+            });
             itemContent = tempDiv.innerHTML;
 
             toggleFavorite(itemId, itemType, itemTitle, itemContent);
