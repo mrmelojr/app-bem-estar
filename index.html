@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seu App de Bem-Estar Total</title>
+    <!-- Link para o Manifesto do PWA -->
+    <link rel="manifest" href="/manifest.json">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -446,7 +448,7 @@
             favoriteButtons.forEach(button => {
                 const itemId = button.dataset.id;
                 if (favorites.some(fav => fav.id === itemId)) {
-                    button.textContent = 'Remover dos Favoritos 💔';
+                    button.textContent = 'Remover dos Favoritos �';
                     button.classList.remove('bg-blue-500', 'hover:bg-blue-600');
                     button.classList.add('bg-red-500', 'hover:bg-red-600');
                 } else {
@@ -513,6 +515,20 @@
             openModal(title, description, imageUrl);
         }
 
+        // --- PWA Service Worker Registration ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registrado com sucesso:', registration);
+                    })
+                    .catch(error => {
+                        console.log('Falha no registro do ServiceWorker:', error);
+                    });
+            });
+        }
+        // --- Fim do Registro do PWA Service Worker ---
+
 
         // Add event listeners to navigation buttons
         navLinks.forEach(link => {
@@ -529,3 +545,4 @@
     </script>
 </body>
 </html>
+�
