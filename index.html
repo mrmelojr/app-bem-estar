@@ -1,36 +1,893 @@
-`).
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seu App de Bem-Estar Total</title>
+    <!-- Link para o Manifesto do PWA -->
+    <link rel="manifest" href="/app-bem-estar/manifest.json">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for Inter font and text shadow */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .text-shadow-md {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        /* Active link styling */
+        .active-link {
+            background-color: white;
+            color: #2563eb; /* blue-700 */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: scale(1.05);
+        }
+        /* Style for clickable exercise names */
+        .exercise-detail-trigger {
+            cursor: pointer;
+            color: #2563eb; /* blue-700 */
+            font-weight: bold;
+            text-decoration: underline;
+            transition: color 0.2s ease-in-out;
+        }
+        .exercise-detail-trigger:hover {
+            color: #1d4ed8; /* blue-800 */
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-100 font-sans antialiased flex flex-col">
 
-    * **Perguntas para você:**
-        * Você consegue encontrar a linha `console.log('openModal called with imageUrl:', imageUrl);` no código que você copiou do GitHub (passo 4)?
-        * As URLs das imagens (como `https://placehold.co/400x250/E0E7FF/4338CA?text=Agachamento`) estão presentes e corretas no `allContent` do código do GitHub?
+    <!-- Header and Navigation -->
+    <header class="bg-gradient-to-r from-blue-600 to-purple-700 text-white shadow-lg p-4 md:p-6 rounded-b-lg">
+        <div class="container mx-auto flex flex-col md:flex-row items-center justify-between">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 md:mb-0 text-shadow-md">
+                Seu App de Bem-Estar Total
+            </h1>
+            <nav class="flex flex-wrap justify-center gap-3 md:gap-6">
+                <button id="nav-home" class="nav-link px-4 py-2 rounded-full text-lg font-medium transition-all duration-300 text-white hover:bg-blue-500 hover:shadow-md">
+                    Início
+                </button>
+                <button id="nav-treinos" class="nav-link px-4 py-2 rounded-full text-lg font-medium transition-all duration-300 text-white hover:bg-blue-500 hover:shadow-md">
+                    Treinos
+                </button>
+                <button id="nav-fisioterapia-pilates" class="nav-link px-4 py-2 rounded-full text-lg font-medium transition-all duration-300 text-white hover:bg-blue-500 hover:shadow-md">
+                    Fisioterapia & Pilates
+                </button>
+                <button id="nav-gastronomia" class="nav-link px-4 py-2 rounded-full text-lg font-medium transition-all duration-300 text-white hover:bg-blue-500 hover:shadow-md">
+                    Gastronomia
+                </button>
+                <button id="nav-favoritos" class="nav-link px-4 py-2 rounded-full text-lg font-medium transition-all duration-300 text-white hover:bg-blue-500 hover:shadow-md">
+                    Meus Favoritos
+                </button>
+            </nav>
+        </div>
+    </header>
 
-**Se o código do GitHub não for o mesmo que te enviei, por favor, re-faça a atualização:**
+    <!-- Main content area -->
+    <main id="app-content" class="flex-grow container mx-auto p-4 md:p-8">
+        <!-- Content will be loaded here by JavaScript -->
+    </main>
 
-1.  Copie **TODO O CÓDIGO** do meu último bloco `<immersive>` (o que começa com `<!DOCTYPE html>`).
-2.  Vá para `https://github.com/mrmelojr/app-bem-estar/blob/main/index.html`
-3.  Clique no ícone de lápis (editar) no canto superior direito.
-4.  **APAGUE TODO O CONTEÚDO EXISTENTE** no editor.
-5.  **COLE O NOVO CÓDIGO** que você copiou do meu bloco `<immersive>`.
-6.  Role para baixo e clique em **"Commit changes"** (Confirmar alterações).
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white p-4 md:p-6 text-center text-sm rounded-t-lg mt-8">
+        <p>&copy; <span id="current-year"></span> App de Bem-Estar Total. Todos os direitos reservados.</p>
+    </footer>
 
-**Passo 2: Limpeza de Cache Extrema no Navegador.**
+    <!-- Modal Structure -->
+    <div id="exercise-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg shadow-xl p-6 md:p-8 w-full max-w-md lg:max-w-xl relative">
+            <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
+            <h3 id="modal-title" class="text-3xl font-bold text-blue-700 mb-4"></h3>
+            <div id="modal-content-details" class="text-gray-700 text-lg leading-relaxed mb-6"></div>
+            <div id="modal-video-placeholder" class="w-full h-48 bg-gray-200 rounded-md flex items-center justify-center text-gray-500 text-sm overflow-hidden">
+                <!-- Placeholder for image or video -->
+                <img id="modal-image" src="" alt="Demonstração do Exercício" class="w-full h-full object-cover hidden">
+                <p id="modal-no-image-text" class="p-4 text-center">Nenhuma imagem/vídeo disponível para este exercício ainda.</p>
+            </div>
+        </div>
+    </div>
 
-Mesmo que o GitHub esteja atualizado, o navegador pode estar te mostrando uma versão antiga em cache.
+    <script>
+        // Get the current year for the footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
 
-1.  Acesse a URL do seu aplicativo: `https://mrmelojr.github.io/app-bem-estar/`
-2.  Abra as Ferramentas do Desenvolvedor (F12 ou Ctrl+Shift+I).
-3.  Vá para a aba **"Application"** (Aplicativo).
-4.  No menu lateral esquerdo, clique em **"Clear storage"** (Limpar armazenamento).
-5.  Certifique-se de que todas as caixas de seleção (Service Workers, Cache storage, IndexedDB, Local storage, etc.) estejam marcadas.
-6.  Clique no botão **"Clear site data"** (Limpar dados do site).
-7.  **Feche e reabra o navegador completamente**, ou abra o aplicativo em uma **janela anônima/privada**.
+        // Get references to main elements
+        const appContent = document.getElementById('app-content');
+        const navLinks = document.querySelectorAll('.nav-link');
 
-**Depois de fazer esses dois passos (principalmente o Passo 1 e a limpeza de cache extrema), por favor, tente novamente:**
+        // Modal elements
+        const exerciseModal = document.getElementById('exercise-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalTitle = document.getElementById('modal-title');
+        const modalContentDetails = document.getElementById('modal-content-details');
+        const modalImage = document.getElementById('modal-image');
+        const modalNoImageText = document.getElementById('modal-no-image-text');
+        const modalVideoPlaceholder = document.getElementById('modal-video-placeholder');
 
-1.  Acesse `https://mrmelojr.github.io/app-bem-estar/`
-2.  Vá para a seção "Treinos".
-3.  Clique em um exercício para abrir o modal.
-4.  Abra o console do navegador (F12).
-5.  **Me diga se agora você vê a mensagem `openModal called with imageUrl:` e qual URL aparece depois dela.**
 
-Estou confiante de que, ao garantir que o HTML esteja realmente atualizado e o cache limpo, conseguiremos ver as imagens!
+        // Helper function to generate a unique ID (simple for this example)
+        function generateUniqueId(prefix) {
+            return prefix + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Functions for localStorage (Favorites)
+        function getFavorites() {
+            const favorites = localStorage.getItem('wellnessAppFavorites');
+            return favorites ? JSON.parse(favorites) : [];
+        }
+
+        function saveFavorites(favorites) {
+            localStorage.setItem('wellnessAppFavorites', JSON.stringify(favorites));
+        }
+
+        function toggleFavorite(itemId, itemType, itemTitle, itemContent) {
+            let favorites = getFavorites();
+            const existingIndex = favorites.findIndex(fav => fav.id === itemId);
+
+            if (existingIndex > -1) {
+                // Item already favorited, remove it
+                favorites.splice(existingIndex, 1);
+                alertMessage('Removido dos favoritos!', 'bg-red-500');
+            } else {
+                // Item not favorited, add it
+                favorites.push({ id: itemId, type: itemType, title: itemTitle, content: itemContent });
+                alertMessage('Adicionado aos favoritos!', 'bg-green-500');
+            }
+            saveFavorites(favorites);
+            // Re-render the current page to update favorite button state
+            loadPage(currentPage);
+        }
+
+        // Functions for localStorage (Completed Workouts)
+        function getCompletedWorkouts() {
+            const completed = localStorage.getItem('wellnessAppCompletedWorkouts');
+            return completed ? JSON.parse(completed) : [];
+        }
+
+        function addCompletedWorkout(workoutId, workoutTitle, notes = '') {
+            let completedWorkouts = getCompletedWorkouts();
+            const now = new Date();
+            const dateString = now.toLocaleDateString('pt-BR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            completedWorkouts.push({ id: workoutId, title: workoutTitle, date: dateString, notes: notes });
+            saveCompletedWorkouts(completedWorkouts);
+            alertMessage('Treino marcado como concluído!', 'bg-purple-500');
+            // Re-render the current page to update button state (optional, but good for consistency)
+            loadPage(currentPage);
+        }
+
+        function saveCompletedWorkouts(completedWorkouts) {
+            localStorage.setItem('wellnessAppCompletedWorkouts', JSON.stringify(completedWorkouts));
+        }
+
+        // Custom Alert Message (instead of alert())
+        function alertMessage(message, bgColor) {
+            const alertBox = document.createElement('div');
+            alertBox.className = `fixed top-4 right-4 p-4 rounded-lg text-white shadow-lg transition-transform transform translate-x-full duration-300 ${bgColor}`;
+            alertBox.textContent = message;
+            document.body.appendChild(alertBox);
+
+            setTimeout(() => {
+                alertBox.classList.remove('translate-x-full');
+                alertBox.classList.add('translate-x-0');
+            }, 50); // Small delay for animation
+
+            setTimeout(() => {
+                alertBox.classList.remove('translate-x-0');
+                alertBox.classList.add('translate-x-full');
+                alertBox.addEventListener('transitionend', () => alertBox.remove());
+            }, 3000); // Disappear after 3 seconds
+        }
+
+        // Modal functions
+        function openModal(title, description, imageUrl) {
+            console.log('openModal called with imageUrl:', imageUrl); // DEBUG LOG - ESTA LINHA É CRUCIAL!
+            modalTitle.textContent = title;
+            modalContentDetails.textContent = description;
+
+            // Sempre garanta que modalImage seja visível por padrão, depois esconda se não houver URL
+            modalImage.classList.remove('hidden'); // Garante que não esteja escondido inicialmente
+            modalNoImageText.classList.add('hidden'); // Esconda o texto "sem imagem" inicialmente
+            modalVideoPlaceholder.classList.remove('flex', 'items-center', 'justify-center'); // Remove o centramento se a imagem estiver presente
+
+            if (imageUrl && imageUrl.startsWith('http')) { // Verifique se é uma string de URL válida
+                modalImage.src = imageUrl;
+                // Não é necessário remover 'hidden' aqui, pois já foi removido acima.
+            } else {
+                modalImage.classList.add('hidden'); // Esconda a imagem se a URL for inválida ou vazia
+                modalImage.src = ''; // Limpe o src
+                modalNoImageText.classList.remove('hidden'); // Mostre o texto "sem imagem"
+                modalVideoPlaceholder.classList.add('flex', 'items-center', 'justify-center'); // Adicione o centramento para o placeholder
+            }
+
+            exerciseModal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            exerciseModal.classList.add('hidden');
+            modalImage.src = ''; // Clear image src when closing
+        }
+
+        closeModalBtn.addEventListener('click', closeModal);
+        exerciseModal.addEventListener('click', (event) => {
+            if (event.target === exerciseModal) { // Close if clicked outside the modal content
+                closeModal();
+            }
+        });
+
+
+        // Define all content here to filter
+        const allContent = {
+            'treinos': [
+                {
+                    id: 'treino_forca_total',
+                    title: 'Treino Exemplo: Força Total (Iniciante)',
+                    description: `Aqui você encontrará planos de treino desenvolvidos por profissionais qualificados,
+                        adaptados às suas necessidades e objetivos, seja para ganho de massa, emagrecimento ou performance.`,
+                    items: [
+                        { name: 'Agachamento (Squat)', detail: 'O agachamento é um exercício fundamental para pernas e glúteos. Mantenha os pés na largura dos ombros, desça como se fosse sentar em uma cadeira, mantendo as costas retas e o peso nos calcanhares. Certifique-se de que seus joelhos não ultrapassem a linha dos pés. Suba controladamente.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Agachamento', emoji: '🏋️‍♀️', series: '3 séries de 10-12 repetições' },
+                        { name: 'Flexão de Braço (Push-up)', detail: 'A flexão de braço fortalece peito, ombros e tríceps. Comece em posição de prancha, desça o corpo até o peito quase tocar o chão, mantendo o corpo reto. Empurre de volta à posição inicial. Se for difícil, apoie os joelhos no chão.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Flexao', emoji: '🤸‍♂️', series: '3 séries de 8-10 repetições (ou com joelhos no chão)' },
+                        { name: 'Remada Curvada (Bent-over Row)', detail: 'A remada curvada trabalha as costas e bíceps. Com halteres ou elástico, incline o tronco para frente, mantendo as costas retas. Puxe o peso em direção ao abdômen, espremendo as omoplatas. Retorne controladamente.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Remada', emoji: '💪', series: '3 séries de 10-12 repetições (com halteres ou elástico)' },
+                        { name: 'Prancha (Plank)', detail: 'A prancha é excelente para fortalecer o core. Mantenha o corpo reto como uma tábua, apoiado nos antebraços e pontas dos pés. Contraia o abdômen e glúteos, evitando que o quadril caia ou suba demais.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Prancha', emoji: '🧘', series: '3 séries, segurar por 30-45 segundos' },
+                        { name: 'Afundo (Lunge)', detail: 'O afundo trabalha pernas e glúteos de forma unilateral. Dê um passo à frente com uma perna, abaixando o quadril até que ambos os joelhos formem um ângulo de 90 graus. O joelho de trás quase toca o chão. Empurre para cima e repita com a outra perna.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Afundo', emoji: '🦵', series: '3 séries de 10 repetições por perna' }
+                    ],
+                    notes: '*Descanse 60-90 segundos entre as séries. Realize este treino 2-3 vezes por semana.*'
+                },
+                {
+                    id: 'treino_cardio_hiit',
+                    title: 'Treino Exemplo: Cardio HIIT (Intermediário)',
+                    description: ``, // Description for this specific workout, or leave empty if general description is enough
+                    items: [
+                        { name: 'Polichinelos (Jumping Jacks)', detail: 'Comece com os pés juntos e braços ao lado do corpo. Salte, abrindo as pernas e levantando os braços acima da cabeça. Volte à posição inicial. Faça o mais rápido possível.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Polichinelos', emoji: '', series: '40 segundos de execução, 20 segundos de descanso' },
+                        { name: 'Corrida no Lugar (High Knees)', detail: 'Corra no lugar, levantando os joelhos o mais alto possível em direção ao peito. Mantenha um ritmo rápido e use os braços para impulsionar.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Corrida+no+Lugar', emoji: '', series: '40 segundos de execução, 20 segundos de descanso' },
+                        { name: 'Burpees', detail: 'Comece em pé, agache, coloque as mãos no chão, jogue os pés para trás (posição de prancha), faça uma flexão (opcional), traga os pés de volta, e salte com os braços para cima.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Burpees', emoji: '', series: '40 segundos de execução, 20 segundos de descanso' },
+                        { name: 'Mountain Climbers', detail: 'Em posição de prancha, traga um joelho de cada vez em direção ao peito, alternando as pernas rapidamente, como se estivesse escalando uma montanha.', image: 'https://placehold.co/400x250/E0E7FF/4338CA?text=Mountain+Climbers', emoji: '', series: '40 segundos de execução, 20 segundos de descanso' }
+                    ],
+                    notes: '*Repita o circuito 3-4 vezes. Descanse 1 minuto entre os circuitos. Ideal para 2-3 vezes por semana.*'
+                }
+            ],
+            'fisioterapia-pilates': [
+                {
+                    id: 'pilates_iniciantes',
+                    title: 'Rotina de Pilates para Iniciantes (Foco no Core)',
+                    description: `Nesta seção, você terá acesso a exercícios e orientações para reabilitação,
+                        prevenção de lesões e fortalecimento do core, essenciais para uma vida sem dores e com mais movimento.`,
+                    items: [
+                        { name: 'Cem (The Hundred)', detail: 'Deite-se de costas, pernas em 90 graus (mesa), levante a cabeça e ombros. Bombeie os braços para cima e para baixo 100 vezes, inspirando por 5 e expirando por 5. Mantenha o abdômen contraído e a lombar no chão.', image: 'https://placehold.co/400x250/D1FAE5/065F46?text=Cem+Pilates', emoji: '🌬️', series: '100 bombeamentos de braço, inspirando por 5 e expirando por 5' },
+                        { name: 'Ponte (Bridge)', detail: 'Deite-se de costas, joelhos flexionados, pés no chão. Levante o quadril do chão, articulando a coluna vértebra por vértebra, até formar uma linha reta dos ombros aos joelhos. Contraia glúteos e abdômen. Desça lentamente.', image: 'https://placehold.co/400x250/D1FAE5/065F46?text=Ponte+Pilates', emoji: '⬆️', series: '3 séries de 10-12 elevações de quadril' },
+                        { name: 'Rolamento para Cima (Roll-up)', detail: 'Deite-se de costas, braços estendidos acima da cabeça. Inspire e, ao expirar, levante a cabeça, ombros e tronco, enrolando a coluna para frente, como se fosse tocar os pés. Retorne desenrolando a coluna lentamente.', image: 'https://placehold.co/400x250/D1FAE5/065F46?text=Roll-up+Pilates', emoji: '🧘‍♀️', series: '3 séries de 8-10 repetições, controlando o movimento da coluna' },
+                        { name: 'Single Leg Stretch', detail: 'Deite-se de costas, pernas em 90 graus. Leve um joelho ao peito enquanto a outra perna se estende para longe. Troque as pernas, mantendo o abdômen contraído e a lombar estável. Respire fluidamente.', image: 'https://placehold.co/400x250/D1FAE5/065F46?text=Single+Leg+Stretch', emoji: '🦵', series: '3 séries de 10-12 repetições por perna' },
+                        { name: 'Alongamento da Coluna para Frente (Spine Stretch Forward)', detail: 'Sente-se com as pernas estendidas à frente, pés flexionados. Inspire, alongue a coluna. Ao expirar, curve o tronco para frente a partir do abdômen, alcançando os pés. Mantenha os ombros relaxados e a coluna em C. Retorne vértebra por vértebra.', image: 'https://placehold.co/400x250/D1FAE5/065F46?text=Spine+Stretch', emoji: '🤸‍♀️', series: '3 séries de 8-10 repetições' }
+                    ],
+                    notes: '*Concentre-se na respiração e no controle dos movimentos. Faça 2-3 vezes por semana.*'
+                },
+                {
+                    id: 'fisio_mobilidade_coluna',
+                    title: 'Exercícios de Fisioterapia: Mobilidade da Coluna',
+                    description: ``,
+                    items: [
+                        { name: 'Gato-Camelo (Cat-Cow)', detail: 'Comece de quatro, mãos abaixo dos ombros e joelhos abaixo dos quadris. Inspire, arqueie a coluna, olhando para cima (vaca). Expire, arredonde a coluna, puxando o umbigo para dentro (gato). Faça lentamente e com controle.', image: 'https://placehold.co/400x250/D1FAE5/065F46?text=Gato-Camelo', emoji: '', series: '3 séries de 10 repetições' },
+                        { name: 'Rotação de Tronco Deitado', detail: 'Deite-se de costas, joelhos flexionados e pés no chão. Mantenha os ombros no chão e deixe os joelhos caírem para um lado e depois para o outro, sentindo o alongamento na coluna.', image: 'https://placehold.co/400x250/D1FAE5/065F46?text=Rotacao+Tronco', emoji: '', series: '3 séries de 10 repetições para cada lado' },
+                        { name: 'Alongamento de Joelho ao Peito', detail: 'Deite-se de costas. Puxe um joelho em direção ao peito, segurando com as mãos, enquanto a outra perna permanece estendida. Mantenha por 20-30 segundos e troque de lado.', image: 'https://placehold.co/400x250/D1FAE5/065F46?text=Alongamento+Joelho', emoji: '', series: '3 séries de 20-30 segundos por perna' }
+                    ],
+                    notes: '*Realize estes exercícios suavemente, focando na mobilidade e alívio de tensão.*'
+                }
+            ],
+            'gastronomia': [
+                {
+                    id: 'receita_quinoa',
+                    title: 'Receita: Salada de Quinoa com Vegetais Coloridos 🥗',
+                    description: `Descubra um mundo de receitas deliciosas e nutritivas, pensadas para complementar
+                        seu estilo de vida ativo e saudável. Alimente-se bem sem abrir mão do prazer de comer!`,
+                    ingredients: [
+                        '1 xícara de quinoa cozida', '1/2 pepino picado', '1/2 pimentão vermelho picado',
+                        '1/2 cebola roxa picada', '1/4 xícara de milho cozido', 'Folhas de hortelã fresca picadas a gosto',
+                        'Suco de 1 limão', '2 colheres de sopa de azeite de oliva extra virgem', 'Sal e pimenta do reino a gosto'
+                    ],
+                    preparation: [
+                        'Em uma tigela grande, misture a quinoa cozida, pepino, pimentão, cebola roxa e milho.',
+                        'Adicione as folhas de hortelã.',
+                        'Em um recipiente separado, misture o suco de limão, azeite, sal e pimenta.',
+                        'Despeje o molho sobre a salada e misture bem. Sirva fria.'
+                    ]
+                },
+                {
+                    id: 'receita_smoothie',
+                    title: 'Receita: Smoothie Verde Energizante 🥤🌿',
+                    description: ``,
+                    ingredients: [
+                        '1 xícara de espinafre fresco', '1/2 banana congelada', '1/2 maçã picada',
+                        '1/2 xícara de água de coco (ou água filtrada)', '1 colher de sopa de semente de chia', 'Gelo a gosto'
+                    ],
+                    preparation: [
+                        'Adicione todos os ingredientes no liquidificador.',
+                        'Bata até obter uma mistura homogênea e cremosa.',
+                        'Sirva imediatamente.'
+                    ]
+                },
+                {
+                    id: 'receita_wrap_frango',
+                    title: 'Receita: Wrap de Frango com Vegetais Frescos 🌯',
+                    description: ``,
+                    ingredients: [
+                        '1 tortilla integral grande', '100g de peito de frango cozido e desfiado',
+                        '1/4 xícara de cenoura ralada', '1/4 xícara de repolho roxo picado',
+                        '2 folhas de alface grandes', '1 colher de sopa de iogurte natural (ou maionese light)',
+                        '1 colher de chá de mostarda dijon', 'Sal e pimenta do reino a gosto'
+                    ],
+                    preparation: [
+                        'Em uma tigela, misture o frango desfiado, cenoura, repolho roxo, iogurte, mostarda, sal e pimenta.',
+                        'Espalhe as folhas de alface sobre a tortilla.',
+                        'Distribua a mistura de frango sobre a alface.',
+                        'Enrole a tortilla firmemente. Corte ao meio e sirva.'
+                    ]
+                }
+            ]
+        };
+
+        // Function to generate HTML for filterable items
+        function generateFilteredItemsHtml(pageName, filterText = '') {
+            let htmlContent = '';
+            const items = allContent[pageName];
+            const lowerCaseFilter = filterText.toLowerCase();
+            let itemsFound = false;
+
+            items.forEach(category => {
+                let categoryHtml = '';
+                let categoryMatches = false;
+
+                // Check if category title matches filter
+                if (category.title.toLowerCase().includes(lowerCaseFilter)) {
+                    categoryMatches = true;
+                }
+
+                // Build content for items/ingredients/preparation within the category
+                if (category.items) { // For Treinos and Fisioterapia/Pilates
+                    let itemsHtml = '';
+                    let anyItemMatches = false;
+                    category.items.forEach(item => {
+                        if (categoryMatches || item.name.toLowerCase().includes(lowerCaseFilter) || item.detail.toLowerCase().includes(lowerCaseFilter)) {
+                            itemsHtml += `
+                                <li><span class="exercise-detail-trigger"
+                                    data-title="${item.name}"
+                                    data-description="${item.detail}"
+                                    data-image="${item.image}">
+                                    ${item.name}
+                                </span>: ${item.series} ${item.emoji || ''}</li>
+                            `;
+                            anyItemMatches = true;
+                        }
+                    });
+                    if (itemsHtml) {
+                        categoryHtml += `<ul class="list-disc list-inside text-gray-600 space-y-2 mb-4">${itemsHtml}</ul>`;
+                    }
+                    if (categoryMatches || anyItemMatches) { itemsFound = true; }
+
+                } else if (category.ingredients && category.preparation) { // For Gastronomia
+                    let ingredientsHtml = '';
+                    let preparationHtml = '';
+                    let anyRecipePartMatches = false;
+
+                    category.ingredients.forEach(ing => {
+                        if (categoryMatches || ing.toLowerCase().includes(lowerCaseFilter)) {
+                            ingredientsHtml += `<li>${ing}</li>`;
+                            anyRecipePartMatches = true;
+                        }
+                    });
+                    if (ingredientsHtml) {
+                        categoryHtml += `<h4 class="text-xl font-medium text-gray-700 mb-2">Ingredientes:</h4>
+                                        <ul class="list-disc list-inside text-gray-600 space-y-1 mb-4">${ingredientsHtml}</ul>`;
+                    }
+
+                    category.preparation.forEach(prep => {
+                        if (categoryMatches || prep.toLowerCase().includes(lowerCaseFilter)) {
+                            preparationHtml += `<li>${prep}</li>`;
+                            anyRecipePartMatches = true;
+                        }
+                    });
+                    if (preparationHtml) {
+                        categoryHtml += `<h4 class="text-xl font-medium text-gray-700 mb-2">Modo de Preparo:</h4>
+                                        <ol class="list-decimal list-inside text-gray-600 space-y-1 mb-4">${preparationHtml}</ol>`;
+                    }
+                    if (categoryMatches || anyRecipePartMatches) { itemsFound = true; }
+                }
+
+                // Only render the category card if it or any of its sub-items match the filter
+                if (categoryMatches || categoryHtml) { // categoryHtml will be non-empty if items/ingredients/preparation matched
+                    htmlContent += `
+                        <div class="mb-8 p-4 bg-gray-50 rounded-lg shadow-sm">
+                            <h3 class="text-2xl font-semibold text-blue-600 mb-4">${category.title}</h3>
+                            ${category.description ? `<p class="text-lg text-gray-700 mb-4">${category.description}</p>` : ''}
+                            ${categoryHtml}
+                            ${category.notes ? `<p class="text-md text-gray-700 mb-4">${category.notes}</p>` : ''}
+                            <button class="favorite-btn mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
+                                    data-id="${category.id}"
+                                    data-type="${pageName === 'treinos' ? 'Treino' : (pageName === 'fisioterapia-pilates' ? 'Fisioterapia & Pilates' : 'Gastronomia')}"
+                                    data-title="${category.title}">
+                                Adicionar aos Favoritos ❤️
+                            </button>
+                    `;
+                    // Only add complete workout button for 'treinos'
+                    if (pageName === 'treinos') {
+                        htmlContent += `
+                            <div class="mt-4">
+                                <textarea id="notes-${category.id}" class="w-full p-2 border border-gray-300 rounded-md mb-2" rows="2" placeholder="Adicione suas notas aqui..."></textarea>
+                                <button class="complete-workout-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
+                                        data-id="${category.id}"
+                                        data-title="${category.title}">
+                                    Marcar como Concluído ✅
+                                </button>
+                            </div>
+                        `;
+                    }
+                    htmlContent += `</div>`;
+                }
+            });
+
+            if (!itemsFound && filterText) { // If filter is active but no items found
+                htmlContent = '<p class="text-lg text-gray-600 text-center">Nenhum item encontrado para a sua pesquisa.</p>';
+            } else if (!itemsFound && !filterText && items.length === 0) { // If no items at all
+                 htmlContent = '<p class="text-lg text-gray-600 text-center">Não há conteúdo disponível nesta seção ainda.</p>';
+            }
+
+
+            // Add the "Em breve" section
+            let soonHtml = '';
+            if (pageName === 'treinos') {
+                soonHtml = `<div class="bg-blue-100 p-4 rounded-md text-blue-800 border border-blue-200">
+                    <p class="font-semibold">Em breve:</p>
+                    <p>Vídeos demonstrativos, agendamento de sessões com personal trainers e feedback em tempo real!</p>
+                </div>`;
+            } else if (pageName === 'fisioterapia-pilates') {
+                soonHtml = `<div class="bg-green-100 p-4 rounded-md text-green-800 border border-green-200">
+                    <p class="font-semibold">Em breve:</p>
+                    <p>Sessões online com fisioterapeutas, aulas de Pilates ao vivo e programas de recuperação personalizados!</p>
+                </div>`;
+            } else if (pageName === 'gastronomia') {
+                soonHtml = `<div class="bg-yellow-100 p-4 rounded-md text-yellow-800 border border-yellow-200">
+                    <p class="font-semibold">Em breve:</p>
+                    <p>Planos alimentares personalizados, lista de compras inteligente e integração com nutricionistas!</p>
+                </div>`;
+            }
+
+            return htmlContent + soonHtml;
+        }
+
+
+        // Define content for non-filterable pages
+        const pages = {
+            'home': `
+                <div class="bg-white p-6 md:p-10 rounded-lg shadow-xl text-center">
+                    <h2 class="text-4xl font-extrabold text-blue-700 mb-6">Bem-vindo ao Seu Guia de Bem-Estar!</h2>
+                    <p class="text-lg text-gray-700 mb-8 leading-relaxed">
+                        Descubra uma nova forma de cuidar de si mesmo, unindo o melhor dos treinos personalizados,
+                        terapias de movimento e uma alimentação saudável e deliciosa.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-blue-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center text-center">
+                            <div class="text-5xl mb-4">💪</div>
+                            <h3 class="text-2xl font-semibold text-blue-600 mb-3">Treinos Personalizados</h3>
+                            <p class="text-gray-600">Planos de treino adaptados aos seus objetivos, com acompanhamento profissional.</p>
+                        </div>
+                        <div class="bg-blue-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center text-center">
+                            <div class="text-5xl mb-4">🧘‍♀️</div>
+                            <h3 class="text-2xl font-semibold text-blue-600 mb-3">Fisioterapia & Pilates</h3>
+                            <p class="text-gray-600">Recupere-se e fortaleça seu corpo com sessões especializadas e instrutores qualificados.</p>
+                        </div>
+                        <div class="bg-blue-50 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center text-center">
+                            <div class="text-5xl mb-4">🥗</div>
+                            <h3 class="text-2xl font-semibold text-blue-600 mb-3">Gastronomia Saudável</h3>
+                            <p class="text-gray-600">Receitas nutritivas e saborosas para uma vida equilibrada, sem abrir mão do prazer.</p>
+                        </div>
+                    </div>
+                    <div class="mt-10 p-6 bg-purple-50 rounded-lg shadow-md">
+                        <h3 class="text-2xl font-semibold text-purple-700 mb-4">Receba Lembretes!</h3>
+                        <p class="text-gray-700 mb-4">
+                            Ative as notificações para receber lembretes de treinos, dicas de saúde e novas receitas!
+                        </p>
+                        <button id="request-notification-permission" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300">
+                            Ativar Notificações 🔔
+                        </button>
+                        <button id="send-test-notification" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300 ml-4 hidden">
+                            Enviar Notificação de Teste
+                        </button>
+                    </div>
+                </div>
+            `,
+            'favoritos': `
+                <div class="bg-white p-6 md:p-10 rounded-lg shadow-xl">
+                    <h2 class="text-3xl font-bold text-blue-700 mb-6">Meus Favoritos</h2>
+                    <div id="favorites-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <!-- Favorited items will be loaded here by JavaScript -->
+                    </div>
+                    <p id="no-favorites-message" class="text-lg text-gray-600 text-center mt-8 hidden">
+                        Você ainda não tem itens favoritos. Adicione alguns para vê-los aqui!
+                    </p>
+
+                    <h2 class="text-3xl font-bold text-blue-700 mb-6 mt-10">Histórico de Treinos Concluídos</h2>
+                    <div id="completed-workouts-list" class="space-y-4">
+                        <!-- Completed workouts will be loaded here by JavaScript -->
+                    </div>
+                    <p id="no-completed-workouts-message" class="text-lg text-gray-600 text-center mt-8 hidden">
+                        Nenhum treino concluído ainda. Marque um treino para vê-lo aqui!
+                    </p>
+                </div>
+            `
+        };
+
+        let currentPage = 'home'; // Keep track of the current page
+
+        // Function to load page content
+        function loadPage(pageName, filterText = '') {
+            currentPage = pageName; // Update current page
+
+            if (pageName === 'treinos' || pageName === 'fisioterapia-pilates' || pageName === 'gastronomia') {
+                // Render the main structure with search input only once
+                appContent.innerHTML = `
+                    <div class="bg-white p-6 md:p-10 rounded-lg shadow-xl">
+                        <h2 class="text-3xl font-bold text-blue-700 mb-6">Sua Jornada de Bem-Estar</h2>
+                        <input type="text" id="search-input" placeholder="Pesquisar..." class="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <div id="filtered-items-container">
+                            <!-- Filtered items will be rendered here -->
+                        </div>
+                    </div>
+                `;
+                const searchInput = document.getElementById('search-input');
+                const filteredItemsContainer = document.getElementById('filtered-items-container');
+
+                if (searchInput) {
+                    searchInput.value = filterText; // Set the search input value
+                    searchInput.focus(); // Keep focus on the input
+                    // Remove existing listener to prevent duplicates
+                    searchInput.removeEventListener('input', handleSearchInput);
+                    searchInput.addEventListener('input', handleSearchInput);
+                }
+
+                // Initial render of filtered items
+                filteredItemsContainer.innerHTML = generateFilteredItemsHtml(pageName, filterText);
+
+            } else {
+                appContent.innerHTML = pages[pageName];
+                // If on home page, attach notification listeners
+                if (pageName === 'home') {
+                    attachNotificationListeners();
+                }
+            }
+
+
+            // Update active link styling
+            navLinks.forEach(link => {
+                link.classList.remove('active-link');
+                link.classList.add('text-white', 'hover:bg-blue-500', 'hover:shadow-md');
+            });
+
+            const activeLink = document.getElementById(`nav-${pageName}`);
+            if (activeLink) {
+                activeLink.classList.remove('text-white', 'hover:bg-blue-500', 'hover:shadow-md');
+                activeLink.classList.add('active-link');
+            }
+
+            // If it's the favorites page, render the favorited items
+            if (pageName === 'favoritos') {
+                renderFavorites();
+                renderCompletedWorkouts(); // Render completed workouts on favorites page
+            } else {
+                // Attach event listeners to favorite buttons on other pages
+                attachFavoriteButtonListeners();
+                updateFavoriteButtonStates();
+                // Attach event listeners for exercise details
+                attachExerciseDetailListeners();
+                // Attach event listeners for complete workout buttons
+                attachCompleteWorkoutListeners();
+            }
+        }
+
+        // Handler for search input
+        function handleSearchInput(event) {
+            const filterText = event.target.value;
+            const filteredItemsContainer = document.getElementById('filtered-items-container');
+            if (filteredItemsContainer) {
+                filteredItemsContainer.innerHTML = generateFilteredItemsHtml(currentPage, filterText);
+                attachFavoriteButtonListeners(); // Re-attach listeners after content update
+                updateFavoriteButtonStates(); // Update favorite button states
+                attachExerciseDetailListeners(); // Re-attach detail listeners
+                attachCompleteWorkoutListeners(); // Re-attach complete workout listeners
+            }
+        }
+
+
+        // Function to attach listeners to favorite buttons
+        function attachFavoriteButtonListeners() {
+            const favoriteButtons = document.querySelectorAll('.favorite-btn');
+            favoriteButtons.forEach(button => {
+                // Remove existing listener to prevent duplicates
+                button.removeEventListener('click', handleFavoriteButtonClick);
+                button.addEventListener('click', handleFavoriteButtonClick);
+            });
+        }
+
+        function handleFavoriteButtonClick(event) {
+            const button = event.target;
+            const itemId = button.dataset.id;
+            const itemType = button.dataset.type;
+            const itemTitle = button.dataset.title;
+
+            // Get the content of the parent div (the entire item card)
+            let itemContentElement = button.closest('.p-4.bg-gray-50.rounded-lg.shadow-sm');
+            let itemContent = itemContentElement ? itemContentElement.innerHTML : '';
+
+            // Remove the favorite button HTML from the content before saving
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = itemContent;
+            const btnToRemove = tempDiv.querySelector('.favorite-btn');
+            if (btnToRemove) {
+                btnToRemove.remove();
+            }
+            // Remove the complete workout button HTML from the content before saving
+            const completeBtnToRemove = tempDiv.querySelector('.complete-workout-btn');
+            if (completeBtnToRemove) {
+                completeBtnToRemove.remove();
+            }
+            // Also remove the placeholder image section if it exists (only for Treinos)
+            const imgSectionToRemove = tempDiv.querySelector('.mt-6.p-4.bg-blue-50.rounded-md.border.border-blue-100.text-center');
+            if (imgSectionToRemove) {
+                imgSectionToRemove.remove();
+            }
+            // Remove the exercise-detail-trigger spans from the content before saving
+            const triggersToRemove = tempDiv.querySelectorAll('.exercise-detail-trigger');
+            triggersToRemove.forEach(trigger => {
+                const spanContent = trigger.innerHTML;
+                const textNode = document.createTextNode(spanContent);
+                trigger.parentNode.replaceChild(textNode, trigger);
+            });
+            // Remove the notes textarea from the content before saving
+            const notesTextareaToRemove = tempDiv.querySelector('textarea[id^="notes-"]');
+            if (notesTextareaToRemove) {
+                notesTextareaToRemove.remove();
+            }
+
+            itemContent = tempDiv.innerHTML;
+
+            toggleFavorite(itemId, itemType, itemTitle, itemContent);
+        }
+
+        // Function to update the text and style of favorite buttons
+        function updateFavoriteButtonStates() {
+            const favorites = getFavorites();
+            const favoriteButtons = document.querySelectorAll('.favorite-btn');
+            favoriteButtons.forEach(button => {
+                const itemId = button.dataset.id;
+                if (favorites.some(fav => fav.id === itemId)) {
+                    button.textContent = 'Remover dos Favoritos 💔';
+                    button.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+                    button.classList.add('bg-red-500', 'hover:bg-red-600');
+                } else {
+                    button.textContent = 'Adicionar aos Favoritos ❤️';
+                    button.classList.remove('bg-red-500', 'hover:bg-red-600');
+                    button.classList.add('bg-blue-500', 'hover:bg-blue-600');
+                }
+            });
+        }
+
+        // Function to render favorited items on the "Meus Favoritos" page
+        function renderFavorites() {
+            const favoritesListDiv = document.getElementById('favorites-list');
+            const noFavoritesMessage = document.getElementById('no-favorites-message');
+            const favorites = getFavorites();
+
+            favoritesListDiv.innerHTML = ''; // Clear previous content
+
+            if (favorites.length === 0) {
+                noFavoritesMessage.classList.remove('hidden');
+            } else {
+                noFavoritesMessage.classList.add('hidden');
+                favorites.forEach(fav => {
+                    const favoriteCard = document.createElement('div');
+                    favoriteCard.className = 'bg-white p-6 rounded-lg shadow-md border border-gray-200';
+                    favoriteCard.innerHTML = `
+                        <h3 class="text-xl font-semibold text-purple-700 mb-2">${fav.title}</h3>
+                        <p class="text-sm text-gray-500 mb-4">Tipo: ${fav.type}</p>
+                        <div class="text-gray-700 text-sm leading-relaxed mb-4">${fav.content}</div>
+                        <button class="remove-favorite-btn bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
+                                data-id="${fav.id}">
+                            Remover 🗑️
+                        </button>
+                    `;
+                    favoritesListDiv.appendChild(favoriteCard);
+                });
+
+                // Attach listeners to remove buttons on the favorites page
+                document.querySelectorAll('.remove-favorite-btn').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const itemId = event.target.dataset.id;
+                        toggleFavorite(itemId); // Use toggleFavorite to remove
+                        renderFavorites(); // Re-render favorites list
+                    });
+                });
+            }
+        }
+
+        // Function to render completed workouts on the "Meus Favoritos" page
+        function renderCompletedWorkouts() {
+            const completedWorkoutsListDiv = document.getElementById('completed-workouts-list');
+            const noCompletedWorkoutsMessage = document.getElementById('no-completed-workouts-message');
+            const completedWorkouts = getCompletedWorkouts();
+
+            completedWorkoutsListDiv.innerHTML = ''; // Clear previous content
+
+            if (completedWorkouts.length === 0) {
+                noCompletedWorkoutsMessage.classList.remove('hidden');
+            } else {
+                noCompletedWorkoutsMessage.classList.add('hidden');
+                // Sort by date descending (most recent first)
+                completedWorkouts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                completedWorkouts.forEach(workout => {
+                    const workoutCard = document.createElement('div');
+                    workoutCard.className = 'bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200 flex justify-between items-center';
+                    workoutCard.innerHTML = `
+                        <div>
+                            <h4 class="text-lg font-semibold text-blue-600">${workout.title}</h4>
+                            <p class="text-sm text-gray-500">Concluído em: ${workout.date}</p>
+                            ${workout.notes ? `<p class="text-sm text-gray-600 italic mt-1">Notas: ${workout.notes}</p>` : ''}
+                        </div>
+                        <button class="remove-completed-workout-btn bg-red-500 hover:bg-red-600 text-white text-sm font-bold py-1 px-3 rounded-full transition-colors duration-300"
+                                data-id="${workout.id}" data-date="${workout.date}">
+                            Remover
+                        </button>
+                    `;
+                    completedWorkoutsListDiv.appendChild(workoutCard);
+                });
+
+                // Attach listeners to remove completed workout buttons
+                document.querySelectorAll('.remove-completed-workout-btn').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const workoutId = event.target.dataset.id;
+                        const workoutDate = event.target.dataset.date;
+                        removeCompletedWorkout(workoutId, workoutDate);
+                        renderCompletedWorkouts(); // Re-render the list
+                    });
+                });
+            }
+        }
+
+        // Function to remove a specific completed workout entry
+        function removeCompletedWorkout(workoutId, workoutDate) {
+            let completedWorkouts = getCompletedWorkouts();
+            // Find and remove the exact entry (id + date)
+            completedWorkouts = completedWorkouts.filter(workout =>
+                !(workout.id === workoutId && workout.date === workoutDate)
+            );
+            saveCompletedWorkouts(completedWorkouts);
+            alertMessage('Registro de treino removido!', 'bg-red-500');
+        }
+
+
+        // Function to attach listeners to exercise detail triggers
+        function attachExerciseDetailListeners() {
+            const detailTriggers = document.querySelectorAll('.exercise-detail-trigger');
+            detailTriggers.forEach(trigger => {
+                trigger.removeEventListener('click', handleExerciseDetailClick); // Prevent duplicate listeners
+                trigger.addEventListener('click', handleExerciseDetailClick);
+            });
+        }
+
+        function handleExerciseDetailClick(event) {
+            const trigger = event.target;
+            const title = trigger.dataset.title;
+            const description = trigger.dataset.description;
+            const imageUrl = trigger.dataset.image; // Use data-image for the URL
+
+            openModal(title, description, imageUrl);
+        }
+
+        // Function to attach listeners to complete workout buttons
+        function attachCompleteWorkoutListeners() {
+            const completeButtons = document.querySelectorAll('.complete-workout-btn');
+            completeButtons.forEach(button => {
+                button.removeEventListener('click', handleCompleteWorkoutClick); // Prevent duplicate listeners
+                button.addEventListener('click', handleCompleteWorkoutClick);
+            });
+        }
+
+        function handleCompleteWorkoutClick(event) {
+            const button = event.target;
+            const workoutId = button.dataset.id;
+            const workoutTitle = button.dataset.title;
+            const notesInput = document.getElementById(`notes-${workoutId}`);
+            const notes = notesInput ? notesInput.value : ''; // Get notes if input exists
+            addCompletedWorkout(workoutId, workoutTitle, notes);
+        }
+
+        // --- PWA Notification Functions ---
+        function requestNotificationPermission() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        alertMessage('Permissão para notificações concedida!', 'bg-green-500');
+                        document.getElementById('send-test-notification').classList.remove('hidden');
+                    } else if (permission === 'denied') {
+                        alertMessage('Permissão para notificações negada.', 'bg-red-500');
+                    } else {
+                        alertMessage('Permissão para notificações ignorada.', 'bg-yellow-500');
+                    }
+                });
+            } else {
+                alertMessage('Este navegador não suporta notificações.', 'bg-red-500');
+            }
+        }
+
+        function sendTestNotification() {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                navigator.serviceWorker.ready.then(registration => {
+                    // Use a URL absoluta para o ícone da notificação
+                    registration.showNotification('Lembrete do App de Bem-Estar!', {
+                        body: 'É hora de se exercitar ou preparar uma refeição saudável!',
+                        icon: 'https://placehold.co/192x192/2563eb/ffffff?text=App', // URL absoluta para o ícone
+                        vibrate: [200, 100, 200], // Vibração (opcional)
+                        tag: 'test-notification' // Tag para agrupar notificações
+                    });
+                    alertMessage('Notificação de teste enviada!', 'bg-blue-500');
+                });
+            } else {
+                alertMessage('Permissão de notificação não concedida ou Service Worker não pronto.', 'bg-red-500');
+            }
+        }
+
+        function attachNotificationListeners() {
+            const requestBtn = document.getElementById('request-notification-permission');
+            const sendTestBtn = document.getElementById('send-test-notification');
+
+            if (requestBtn) {
+                requestBtn.removeEventListener('click', requestNotificationPermission);
+                requestBtn.addEventListener('click', requestNotificationPermission);
+            }
+            if (sendTestBtn) {
+                sendTestBtn.removeEventListener('click', sendTestNotification);
+                sendTestBtn.addEventListener('click', sendTestNotification);
+
+                // Check initial permission state
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    sendTestBtn.classList.remove('hidden');
+                }
+            }
+        }
+        // --- Fim das Funções de Notificação PWA ---
+
+
+        // --- PWA Service Worker Registration ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/app-bem-estar/service-worker.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registrado com sucesso:', registration);
+                    })
+                    .catch(error => {
+                        console.log('Falha no registro do ServiceWorker:', error);
+                    });
+            });
+        }
+        // --- Fim do Registro do PWA Service Worker ---
+
+
+        // Add event listeners to navigation buttons
+        navLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                const pageId = event.target.id.replace('nav-', '');
+                loadPage(pageId);
+            });
+        });
+
+        // Load the home page by default when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPage('home');
+        });
+    </script>
+</body>
+</html>
