@@ -14,6 +14,13 @@
         .text-shadow-md {
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
+        /* Active link styling */
+        .active-link {
+            background-color: white;
+            color: #2563eb; /* blue-700 */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gray-100 font-sans antialiased flex flex-col">
@@ -25,7 +32,7 @@
                 Seu App de Bem-Estar Total
             </h1>
             <nav class="flex flex-wrap justify-center gap-3 md:gap-6">
-                <button id="nav-home" class="nav-link px-4 py-2 rounded-full text-lg font-medium transition-all duration-300 text-white hover:bg-blue-500 hover:shadow-md active-link">
+                <button id="nav-home" class="nav-link px-4 py-2 rounded-full text-lg font-medium transition-all duration-300 text-white hover:bg-blue-500 hover:shadow-md">
                     Início
                 </button>
                 <button id="nav-treinos" class="nav-link px-4 py-2 rounded-full text-lg font-medium transition-all duration-300 text-white hover:bg-blue-500 hover:shadow-md">
@@ -94,12 +101,17 @@
                         Aqui você encontrará planos de treino desenvolvidos por profissionais qualificados,
                         adaptados às suas necessidades e objetivos, seja para ganho de massa, emagrecimento ou performance.
                     </p>
+                    <h3 class="text-2xl font-semibold text-blue-600 mt-8 mb-4">Treino Exemplo: Força Total (Iniciante)</h3>
                     <ul class="list-disc list-inside text-gray-600 space-y-2 mb-6">
-                        <li>Treinos de força e resistência.</li>
-                        <li>Cardio e HIIT.</li>
-                        <li>Funcional e mobilidade.</li>
-                        <li>Acompanhamento de progresso e dicas de execução.</li>
+                        <li>**Agachamento (Squat):** 3 séries de 10-12 repetições</li>
+                        <li>**Flexão de Braço (Push-up):** 3 séries de 8-10 repetições (ou com joelhos no chão)</li>
+                        <li>**Remada Curvada (Bent-over Row):** 3 séries de 10-12 repetições (com halteres ou elástico)</li>
+                        <li>**Prancha (Plank):** 3 séries, segurar por 30-45 segundos</li>
+                        <li>**Afundo (Lunge):** 3 séries de 10 repetições por perna</li>
                     </ul>
+                    <p class="text-md text-gray-700 mb-6">
+                        *Descanse 60-90 segundos entre as séries. Realize este treino 2-3 vezes por semana.*
+                    </p>
                     <div class="bg-blue-100 p-4 rounded-md text-blue-800 border border-blue-200">
                         <p class="font-semibold">Em breve:</p>
                         <p>Vídeos demonstrativos, agendamento de sessões com personal trainers e feedback em tempo real!</p>
@@ -113,12 +125,17 @@
                         Nesta seção, você terá acesso a exercícios e orientações para reabilitação,
                         prevenção de lesões e fortalecimento do core, essenciais para uma vida sem dores e com mais movimento.
                     </p>
+                    <h3 class="text-2xl font-semibold text-blue-600 mt-8 mb-4">Rotina de Pilates para Iniciantes (Foco no Core)</h3>
                     <ul class="list-disc list-inside text-gray-600 space-y-2 mb-6">
-                        <li>Exercícios para diversas condições (coluna, joelho, ombro).</li>
-                        <li>Rotinas de Pilates para todos os níveis.</li>
-                        <li>Dicas de postura e ergonomia.</li>
-                        <li>Artigos sobre bem-estar e saúde do movimento.</li>
+                        <li>**Cem (The Hundred):** 100 bombeamentos de braço, inspirando por 5 e expirando por 5.</li>
+                        <li>**Ponte (Bridge):** 3 séries de 10-12 elevações de quadril.</li>
+                        <li>**Rolamento para Cima (Roll-up):** 3 séries de 8-10 repetições, controlando o movimento da coluna.</li>
+                        <li>**Single Leg Stretch:** 3 séries de 10-12 repetições por perna.</li>
+                        <li>**Alongamento da Coluna para Frente (Spine Stretch Forward):** 3 séries de 8-10 repetições.</li>
                     </ul>
+                    <p class="text-md text-gray-700 mb-6">
+                        *Concentre-se na respiração e no controle dos movimentos. Faça 2-3 vezes por semana.*
+                    </p>
                     <div class="bg-green-100 p-4 rounded-md text-green-800 border border-green-200">
                         <p class="font-semibold">Em breve:</p>
                         <p>Sessões online com fisioterapeutas, aulas de Pilates ao vivo e programas de recuperação personalizados!</p>
@@ -132,12 +149,44 @@
                         Descubra um mundo de receitas deliciosas e nutritivas, pensadas para complementar
                         seu estilo de vida ativo e saudável. Alimente-se bem sem abrir mão do prazer de comer!
                     </p>
-                    <ul class="list-disc list-inside text-gray-600 space-y-2 mb-6">
-                        <li>Receitas para café da manhã, almoço, jantar e lanches.</li>
-                        <li>Opções vegetarianas, veganas e sem glúten.</li>
-                        <li>Dicas de preparo e substituições inteligentes.</li>
-                        <li>Artigos sobre alimentação consciente e benefícios dos alimentos.</li>
+                    <h3 class="text-2xl font-semibold text-blue-600 mt-8 mb-4">Receita: Salada de Quinoa com Vegetais Coloridos</h3>
+                    <h4 class="text-xl font-medium text-gray-700 mb-2">Ingredientes:</h4>
+                    <ul class="list-disc list-inside text-gray-600 space-y-1 mb-4">
+                        <li>1 xícara de quinoa cozida</li>
+                        <li>1/2 pepino picado</li>
+                        <li>1/2 pimentão vermelho picado</li>
+                        <li>1/2 cebola roxa picada</li>
+                        <li>1/4 xícara de milho cozido</li>
+                        <li>Folhas de hortelã fresca picadas a gosto</li>
+                        <li>Suco de 1 limão</li>
+                        <li>2 colheres de sopa de azeite de oliva extra virgem</li>
+                        <li>Sal e pimenta do reino a gosto</li>
                     </ul>
+                    <h4 class="text-xl font-medium text-gray-700 mb-2">Modo de Preparo:</h4>
+                    <ol class="list-decimal list-inside text-gray-600 space-y-1 mb-6">
+                        <li>Em uma tigela grande, misture a quinoa cozida, pepino, pimentão, cebola roxa e milho.</li>
+                        <li>Adicione as folhas de hortelã.</li>
+                        <li>Em um recipiente separado, misture o suco de limão, azeite, sal e pimenta.</li>
+                        <li>Despeje o molho sobre a salada e misture bem. Sirva fria.</li>
+                    </ol>
+
+                    <h3 class="text-2xl font-semibold text-blue-600 mt-8 mb-4">Receita: Smoothie Verde Energizante</h3>
+                    <h4 class="text-xl font-medium text-gray-700 mb-2">Ingredientes:</h4>
+                    <ul class="list-disc list-inside text-gray-600 space-y-1 mb-4">
+                        <li>1 xícara de espinafre fresco</li>
+                        <li>1/2 banana congelada</li>
+                        <li>1/2 maçã picada</li>
+                        <li>1/2 xícara de água de coco (ou água filtrada)</li>
+                        <li>1 colher de sopa de semente de chia</li>
+                        <li>Gelo a gosto</li>
+                    </ul>
+                    <h4 class="text-xl font-medium text-gray-700 mb-2">Modo de Preparo:</h4>
+                    <ol class="list-decimal list-inside text-gray-600 space-y-1 mb-6">
+                        <li>Adicione todos os ingredientes no liquidificador.</li>
+                        <li>Bata até obter uma mistura homogênea e cremosa.</li>
+                        <li>Sirva imediatamente.</li>
+                    </ol>
+
                     <div class="bg-yellow-100 p-4 rounded-md text-yellow-800 border border-yellow-200">
                         <p class="font-semibold">Em breve:</p>
                         <p>Planos alimentares personalizados, lista de compras inteligente e integração com nutricionistas!</p>
@@ -152,14 +201,14 @@
 
             // Update active link styling
             navLinks.forEach(link => {
-                link.classList.remove('bg-white', 'text-blue-700', 'shadow-md', 'transform', 'scale-105', 'active-link');
+                link.classList.remove('active-link');
                 link.classList.add('text-white', 'hover:bg-blue-500', 'hover:shadow-md');
             });
 
             const activeLink = document.getElementById(`nav-${pageName}`);
             if (activeLink) {
                 activeLink.classList.remove('text-white', 'hover:bg-blue-500', 'hover:shadow-md');
-                activeLink.classList.add('bg-white', 'text-blue-700', 'shadow-md', 'transform', 'scale-105', 'active-link');
+                activeLink.classList.add('active-link');
             }
         }
 
